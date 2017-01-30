@@ -1,0 +1,26 @@
+// Some nice-ish colours
+$psy-c1-rgb: '32, 55, 68';    //http://www.colordic.org/colorsample/2444.html
+$psy-c1-hex: #53727d;
+$psy-c6-rgb: '197, 197, 106'; //http://www.colordic.org/colorsample/2144.html
+$psy-c6-hex: #c5c56a;
+
+$psy-black-rgb: "0,0,0";
+$psy-white-rgb: "255,255,255";
+$psy-grey-50-rgb: "127,127,127";
+
+// MDL can be customised by overriding variable. See this file for variable names
+// ./../../node_modules/material-design-lite/src/_variable.scss'
+// https://github.com/google/material-design-lite/wiki/Customizing-Colors
+$psy-primary: $psy-c1-rgb !default;
+$psy-primary-hex: $psy-c1-hex;
+$psy-accent: $psy-c6-rgb !default;
+$psy-accent-hex: $psy-c6-hex;
+
+$color-primary: $psy-primary !default;
+// $color-primary-dark: '<RGB>' !default;
+$color-accent: $psy-accent !default;
+// $color-primary-contrast: $psy-c6-rgb !default;
+// $color-accent-contrast: '<RGB>' !default;
+
+// Helper constant which can be used for additional calculations to ensure proper ratios
+$metric__interval-px: 8px;

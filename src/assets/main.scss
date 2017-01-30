@@ -1,0 +1,22 @@
+@import './globals.scss';
+
+// Need to set the image path so internally required assets load properly
+$image_path: './../../node_modules/material-design-lite/dist/images' !default;
+@import './../../node_modules/material-design-lite/src/material-design-lite';
+
+// global styling
+// .mdl-layout__content {
+// }
+//
+// .page-content {
+//   background-color: white;
+// }
+
+.mdl-grid.grid--max-width {
+  max-width: 980px;
+}
+
+.placeholder-space {
+  outline: 1px solid #ccc;
+  background-color: #efefef;
+}

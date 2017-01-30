@@ -10,8 +10,15 @@
               using just the HTML DOM (with JS and CSS).
             </p>
             <p>
-              My decision to avoid using <code>&lt;canvas&gt;</code> or game engines is purely
-              for my own understanding and to see how far browsers and performance have come.
+              The majority of the project is developed
+              <a href="https://vuejs.org/" target="_blank">VueJS</a>,
+              <a href="https://getmdl.io" target="_blank">Material Design Lite (MDL)</a>,
+              <a href="https://lodash.com" target="_blank">Lodash</a> and
+              <a href="https://github.com/aaron-tay/dom-wars" target="_blank">GitHub for hosting</a>.
+            </p>
+            <p>
+              My decision to avoid using <code>&lt;canvas&gt;</code> or existing game engines is purely
+              for my own understanding and to see what can be done using minimal technologies.
             </p>
           </div>
           <div class="mdl-cell mdl-cell--12-col">

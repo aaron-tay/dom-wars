@@ -68,7 +68,6 @@
           <button class="mdl-button mdl-js-button mdl-button--raised" @click="surrenderCurrentPlayer">
             surrender
           </button>
-          <button
         </template>
         <template v-if="gamePhase === CONST.GAME_PHASE.GAME_OVER">
           <h5>
@@ -81,7 +80,7 @@
             play again
           </button>
         </template>
-
+        <dom-game-tile-info :tile="selectedTile" v-if="selectedTile"></dom-game-tile-info>
         {{selected}}: {{ selectedTile }}
       </div>
     </div>
@@ -90,26 +89,9 @@
 
 <script>
 import lodash from 'lodash';
+import CONSTANTS from './constants';
 import DomGameTile from './DomGameTile';
-
-const MAP_DEFINITION = {
-  WIDTH: 10,
-  HEIGHT: 8,
-};
-
-const RANGE_CODES = {
-  EMPTY: 0,
-  MOVEMENT: 1,
-  COMBAT: 2,
-};
-
-const GAME_PHASE = {
-  TITLE: 'TITLE',
-  SETUP: 'SETUP',
-  PLACEMENT: 'PLACEMENT',
-  PLAYER_TURN: 'PLAYER_TURN',
-  GAME_OVER: 'GAME_OVER',
-};
+import DomGameTileInfo from './DomGameTileInfo';
 
 function generateMap(width, height, contentFn) {
   const map = {};
@@ -129,12 +111,27 @@ function createUnit(ownerId, type) {
     hp: (type + 1) * 3,
     attack: (type + 1),
     defense: (type),
+    speed: type,  // how far can the unit move
+    behaviour: CONSTANTS.UNIT_BEHAVIOUR.MOVE_AND_ACTION,
+    energy: { // restored each turn
+      movement: true,
+      action: true,
+    },
+  };
+}
+
+function createPlayer(playerId, name) {
+  return {
+    id: playerId,
+    name,
+    remoteId: lodash.uniqueId('p'),
   };
 }
 
 export default {
   components: {
     DomGameTile,
+    DomGameTileInfo,
   },
   data() {
     return {
@@ -147,29 +144,17 @@ export default {
         y: -1,
       },
       players: {
-        1: {
-          id: 1,
-          name: 'player 1',
-          remoteId: 'abc',
-        },
-        2: {
-          id: 2,
-          name: 'player 2',
-          remoteId: 'zyx',
-        },
+        1: {},
+        2: {},
       },
       playerTurnOrder: [1, 2],
       winningPlayerId: null,
-      gamePhase: GAME_PHASE.PLAYER_TURN,
+      gamePhase: CONSTANTS.GAME_PHASE.PLAYER_TURN,
     };
   },
   computed: {
     CONST() {
-      return {
-        GAME_PHASE,
-        MAP_DEFINITION,
-        RANGE_CODES,
-      };
+      return CONSTANTS;
     },
     selectedTile() {
       if (this.selected.x === -1 || this.selected.y === -1) {
@@ -185,8 +170,8 @@ export default {
       return this.players[currentPlayerId];
     },
     winningPlayer() {
-      // If this is every invoked, we expect the winning player to be present
-      // Otherwise its an actual but and thus we won't protect against it.
+      // If this is ever invoked, we expect the winning player to be present
+      // Otherwise its an actual bug and thus we won't protect against it.
       const winningPlayerId = this.winningPlayerId;
       return this.players[winningPlayerId];
     },
@@ -202,6 +187,16 @@ export default {
         });
       });
       return result;
+    },
+    selfUnits() {
+      const currentPlayerId = lodash.head(this.playerTurnOrder);
+      const selfUnits = lodash.filter(this.allUnits, (unitItem =>
+        unitItem.ownerId === currentPlayerId
+      ));
+      return selfUnits;
+    },
+    countSelfUnits() {
+      return this.selfUnits.length;
     },
     countEnemyUnits() {
       const currentPlayerId = lodash.head(this.playerTurnOrder);
@@ -235,17 +230,22 @@ export default {
       this.winningPlayerId = null;
       this.gamePhase = this.CONST.GAME_PHASE.PLAYER_TURN;
       this.playerTurnOrder = [1, 2];
+      this.players['1'] = createPlayer(1, 'Player 1');
+      this.players['2'] = createPlayer(2, 'Player 2');
     },
+    // preturn, turn(premove, move, postmove, preaction, action, postaction), postturn
     surrenderCurrentPlayer() {
       this.playerTurnOrder.shift();
       this.checkEndGameConditions();
     },
     checkEndGameConditions() {
+      // Last player alive
       if (this.playerTurnOrder.length === 1) {
         this.winningPlayerId = this.currentPlayer.id;
         this.gamePhase = this.CONST.GAME_PHASE.GAME_OVER;
         return;
       }
+
       // NOTE(ajt): This condition only works if defenders don't get a chance to stikeback
       // Otherwise there's a case where a defending unit could kill an attacking one
       // meaning the defender could win the game. Thus for counting, we might need
@@ -255,10 +255,29 @@ export default {
         this.gamePhase = this.CONST.GAME_PHASE.GAME_OVER;
         return;
       }
+
+      // this condition results in recursion but eventually there will only be one player
+      if (this.countSelfUnits === 0) {
+        this.surrenderCurrentPlayer();
+        return;
+      }
+    },
+    replenishUnitEnergy() {
+      const units = this.selfUnits;
+      lodash.forEach(units, (unitItem) => {
+        const unitToReplenish = unitItem;
+        unitToReplenish.energy = {
+          movement: true,
+          action: true,
+        };
+      });
     },
     passControlToNextPlayer() {
       const currentPlayerId = this.playerTurnOrder.shift();
       this.playerTurnOrder.push(currentPlayerId);
+
+      // NOTE(ajt): From this point on, the 'currentPlayer' has changed
+      this.replenishUnitEnergy();
       this.clearMovement();
       this.clearSelectedTile();
     },
@@ -271,6 +290,7 @@ export default {
         this.unit[defendingTile.y][defendingTile.x] = -1;
         this.checkEndGameConditions();
       }
+      attackingUnit.energy.action = false;
     },
     generateWorld(contentFn) {
       const mapWidth = this.CONST.MAP_DEFINITION.WIDTH;
@@ -289,6 +309,9 @@ export default {
       const hasUnit = this.hasUnit(x, y);
       const isTileEmpty = !hasUnit;
       return isTileEmpty;
+    },
+    canUnitMove(unit) {
+      return unit.energy.movement;
     },
     canMoveIntoTile(x, y) {
       const isTileEmpty = this.hasNoMovementObstacle(x, y);
@@ -321,8 +344,10 @@ export default {
       };
     },
     moveUnit(sourceTile, destinationTile) {
+      const sourceUnit = sourceTile.unit;
       this.unit[destinationTile.y][destinationTile.x] = sourceTile.unit;
       this.unit[sourceTile.y][sourceTile.x] = -1;
+      sourceUnit.energy.movement = false;
     },
     clearSelectedTile() {
       // current definition of an 'unselected tile'
@@ -331,6 +356,33 @@ export default {
     selectTile(x, y) {
       this.selected.x = x;
       this.selected.y = y;
+    },
+    canUnitAttack(attackingTile, defendingTile) {
+      const attackingUnit = attackingTile.unit;
+      const defendingUnit = defendingTile.unit;
+
+      // Cannot attack if no energy
+      if (!attackingUnit.energy.action) {
+        return false;
+      }
+
+      // Cannot attack own units
+      if (attackingUnit.ownerId === defendingUnit.ownerId) {
+        return false;
+      }
+
+      // defending unit is in range of attacking unit
+      const combatRangeInfo = this.range[defendingTile.y][defendingTile.x];
+      const isWithinCombatRange = (combatRangeInfo === this.CONST.RANGE_CODES.COMBAT);
+      if (!isWithinCombatRange) {
+        return false;
+      }
+
+      return true;
+    },
+    canUnitDefend() {
+      // can always defend :)
+      return true;
     },
     onTileClicked(x, y) {
       // selecting self deselects the tile
@@ -342,20 +394,22 @@ export default {
       }
 
       // move to a specific tile
-      const currentTile = this.selectedTile;
+      const currentlySelectedTile = this.selectedTile;
       const destinationTile = this.tile(x, y);
       if (this.selectedTile && this.isMovingUnit) {
-        if (currentTile.unit.ownerId === this.currentPlayer.id) {
-          if (this.canMoveIntoTile(x, y)) {
-            this.moveUnit(currentTile, destinationTile);
+        if (currentlySelectedTile.unit.ownerId === this.currentPlayer.id) {
+          if (this.canUnitMove(currentlySelectedTile.unit) && this.canMoveIntoTile(x, y)) {
+            this.moveUnit(currentlySelectedTile, destinationTile);
             this.clearMovement();
             this.clearSelectedTile();
             return;
           } else if (this.hasEnemyUnit(x, y)) {
-            this.engageCombat(currentTile, destinationTile);
-            this.clearMovement();
-            this.clearSelectedTile();
-            return;
+            if (this.canUnitAttack(currentlySelectedTile, destinationTile)) {
+              this.engageCombat(currentlySelectedTile, destinationTile);
+              this.clearMovement();
+              this.clearSelectedTile();
+              return;
+            }
           }
         }
       }
@@ -363,7 +417,8 @@ export default {
       // NOTE(ajt): From this point on, the 'selectedTile' has changed
       this.selectTile(x, y);
       this.clearMovement();
-      if (this.hasUnit(x, y)) {
+      const newSelectedTile = this.selectedTile;
+      if (this.hasUnit(x, y) && this.canUnitMove(newSelectedTile.unit)) {
         this.generateMovement(x, y, 4);
       }
     },

@@ -9,7 +9,8 @@
       <div class="mdl-layout-spacer"></div>
       <nav class="mdl-navigation">
         <router-link class="mdl-navigation__link" to="/" exact>Home</router-link>
-        <router-link class="mdl-navigation__link" to="/missing" exact>404 Page</router-link>
+        <router-link class="mdl-navigation__link" to="/game" exact>Play</router-link>
+        <router-link class="mdl-navigation__link" to="/about" exact>About</router-link>
       </nav>
     </div>
   </header>

@@ -85,25 +85,11 @@
         {{selected}}: {{ selectedTile }}
       </div>
     </div>
-    <div class="page-content mdl-grid">
-      <div class="mdl-cell mdl-cell--12-col">
-        <vue-markdown>
-          # Changelog
-          ### v0.0.1
-          Added concept of 'player turns'
-          Players can only move units owned by them
-          ### v0.0.0
-          Created map and tile UI.
-          Added ability to select units, display movement range and move units within those bounds
-        </vue-markdown>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import lodash from 'lodash';
-import VueMarkdown from 'vue-markdown';
 import DomGameTile from './DomGameTile';
 
 const MAP_DEFINITION = {
@@ -149,7 +135,6 @@ function createUnit(ownerId, type) {
 export default {
   components: {
     DomGameTile,
-    VueMarkdown,
   },
   data() {
     return {

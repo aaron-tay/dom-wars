@@ -6,8 +6,11 @@
         <div class="page-content mdl-grid">
           <div class="mdl-cell mdl-cell--12-col">
             <h3>
-              This is the root page
+              Welcome
             </h3>
+            <p>
+              dom-wars is an experimental turn-based-strategy game.
+            </p>
           </div>
         </div>
       </main>

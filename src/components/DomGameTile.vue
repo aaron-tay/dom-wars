@@ -5,13 +5,13 @@
     <div class="tile-layer" :class="terrainLayerClass">
     </div>
 
-    <div class="tile-layer">
+    <div class="tile-layer" v-if="tile.unit">
       <div class="content-unit" :class="unitLayerClass">
         {{ unitLayer.hp }}
       </div>
     </div>
 
-    <div class="tile-layer">
+    <div class="tile-layer" v-if="tile.range">
       <div class="info-range" :class="rangeLayerClass">
       </div>
     </div>
@@ -57,6 +57,7 @@ export default {
       };
     },
     unitLayerClass() {
+      if (!this.unitLayer) { return {}; }
       return {
         'content-unit--pawn': this.unitLayer.type === 0,
         'content-unit--knight': this.unitLayer.type === 1,
@@ -76,58 +77,29 @@ export default {
 </script>
 
 <style lang="scss">
-// Was the first reference I found for pastel colours. Looks good enough :)
-// http://colors.findthedata.com/saved_search/Pastel-Colors
-$pastel-blue: rgb(174,198,207);
-$pastel-blue-darker: rgb(119,158,203);
-$pastel-brown: rgb(130,105,83);
-$pastel-gray: rgb(207,207,196);
-$pastel-green: rgb(119,190,119);
-$pastel-green-darker: rgb(3,192,60);
-$pastel-magenta: rgb(244,154,194);
-$pastel-orange: rgb(255,179,71);
-$pastel-pink: rgb(255,209,220);
-$pastel-pink-darker: rgb(222,165,164);
-$pastel-purple: rgb(179,158,181);
-$pastel-purple-lighter: rgb(177,156,217);
-$pastel-purple-darker: rgb(150,111,214);
-$pastel-red: rgb(255,105,97);
-$pastel-red-darker: rgb(194,59,34);
-$pastel-violet: rgb(203,153,201);
-$pastel-yellow: rgb(253,253,150);
+@import './../assets/globals.scss';
 
-$pastel-blue-hex: #AEC6CF;
-$pastel-blue-darker-hex: #779ECB;
-$pastel-brown-hex: #836953;
-$pastel-gray-hex: #CFCFC4;
-$pastel-green-hex: #77DD77;
-$pastel-green-darker-hex: #03C03C;
-$pastel-magenta-hex: #F49AC2;
-$pastel-orange-hex: #FFB347;
-$pastel-pink-hex: #FFD1DC;
-$pastel-pink-darker-hex: #DEA5A4;
-$pastel-purple-hex: #B39EB5;
-$pastel-purple-lighter-hex: #B19CD9;
-$pastel-purple-darker-hex: #966FD6;
-$pastel-red-hex: #FF6961;
-$pastel-red-darker-hex: #C23B22;
-$pastel-violet-hex: #CB99C9;
-$pastel-yellow-hex: #FDFD96;
+$fade-duration-ms: 0.75s;
 
 .tile {
   width: 64px;
   height: 64px;
-  // outline: 1px solid #efefef;
+  outline: 1px solid #efefef;
   position: relative;
   display: table-cell;
   // NOTE(ajt): not sure why I need 'table-cell'... inline-block should work...
 }
+
 .tile-layer {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
+
+  transition: background-color $fade-duration-ms ease-in-out;
+  -moz-transition: background-color $fade-duration-ms ease-in-out;
+  -webkit-transition: background-color $fade-duration-ms ease-in-out;
 }
 
 .terrain--grass {
@@ -150,23 +122,27 @@ $pastel-yellow-hex: #FDFD96;
   width: 50%;
   height: 50%;
   text-align: center;
+
+  transition: background-color $fade-duration-ms ease-in-out;
+  -moz-transition: background-color $fade-duration-ms ease-in-out;
+  -webkit-transition: background-color $fade-duration-ms ease-in-out;
 }
 .content-unit--pawn {
   background-color: $pastel-orange;
   // background: url('~assets/domgame/noun_835647_cc.svg');
 }
 .content-unit--knight {
-  background-color: $pastel-purple-darker;
+  background-color: $pastel-purple-lighter;
 }
 .content-unit--bishop {
   background-color: $pastel-magenta;
 }
 
 .unit-owner--player-one {
-  outline: 2px solid $pastel-red-darker;
+  outline: 2px solid $player-one-color;
 }
 .unit-owner--player-two {
-  outline: 2px solid $pastel-gray;
+  outline: 2px solid $player-two-color;
 }
 
 .info-range {

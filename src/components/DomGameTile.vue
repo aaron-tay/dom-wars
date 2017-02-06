@@ -1,7 +1,7 @@
 <template>
   <!-- TODO(ajt): optimise to only render what is necessary -->
   <!-- NOTE(ajt): layers within tiles causes overlapping which isn't nice... -->
-  <div class="tile">
+  <div class="tile" :class="{ 'tile--selected': tile.isSelected }">
     <div class="tile-layer" :class="terrainLayerClass">
     </div>
 
@@ -80,6 +80,8 @@ export default {
 @import './../assets/globals.scss';
 
 $fade-duration-ms: 0.75s;
+$resting-z-index: 0;
+$selected-z-index: ($resting-z-index + 100);
 
 .tile {
   width: 64px;
@@ -88,6 +90,7 @@ $fade-duration-ms: 0.75s;
   position: relative;
   display: table-cell;
   // NOTE(ajt): not sure why I need 'table-cell'... inline-block should work...
+  z-index: $resting-z-index;
 }
 
 .tile-layer {
@@ -100,6 +103,11 @@ $fade-duration-ms: 0.75s;
   transition: background-color $fade-duration-ms ease-in-out;
   -moz-transition: background-color $fade-duration-ms ease-in-out;
   -webkit-transition: background-color $fade-duration-ms ease-in-out;
+}
+
+.tile--selected {
+  outline: 5px solid #25d925;
+  z-index: $selected-z-index;
 }
 
 .terrain--grass {

@@ -57,7 +57,9 @@ export default {
       'moveUnit',
     ]),
     tile(x, y) {
-      return this.getTileFn()(x, y);
+      const tile = this.getTileFn()(x, y);
+      tile.isSelected = this.isTileCurrentlySelected(x, y);
+      return tile;
     },
     onTileClicked(x, y) {
       if (this.isTileCurrentlySelected(x, y)) {

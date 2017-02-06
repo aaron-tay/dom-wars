@@ -65,6 +65,9 @@ const actions = {
       destination,
     });
   },
+  displayMovementArea({ commit }, source) {
+    console.log(commit, source);
+  },
 };
 
 /* eslint-disable no-param-reassign */

@@ -138,6 +138,12 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import './../../assets/globals.scss';
+
+.player-avatar-icon {
+  position: absolute;
+  top: 20px;
+  right: 0;
+}
 </style>

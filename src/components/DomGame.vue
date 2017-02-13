@@ -47,6 +47,7 @@ export default {
       'getTileFn',
       'getRangeInfoFn',
       'currentGamePhase',
+      'currentPlayer',
     ]),
     selectedTile() {
       return this.getSelectedTile;
@@ -84,18 +85,23 @@ export default {
         const hasUnitInSource = !!source.unit;
         const destination = this.tile(x, y);
         const hasUnitInDestination = !!destination.unit;
-        if (hasUnitInSource && !hasUnitInDestination) {
-          if (this.isWithinMovementRange(x, y)) {
-            this.moveUnit({ source, destination });
+        if (hasUnitInSource) {
+          const currentPlayerOwnsSourceUnit = this.currentPlayer.playerId === source.unit.ownerId;
+          if (!currentPlayerOwnsSourceUnit) {
+            this.unselectTile();
+          } else if (!hasUnitInDestination) {
+            if (this.isWithinMovementRange(x, y)) {
+              this.moveUnit({ source, destination });
+            }
+            this.unselectTile();
+            return;
+          } else if (hasUnitInDestination) {
+            if (this.isWithinCombatRange(x, y)) {
+              this.attackUnit({ source, destination });
+            }
+            this.unselectTile();
+            return;
           }
-          this.unselectTile();
-          return;
-        } else if (hasUnitInSource && hasUnitInDestination) {
-          if (this.isWithinCombatRange(x, y)) {
-            this.attackUnit({ source, destination });
-          }
-          this.unselectTile();
-          return;
         }
       }
 

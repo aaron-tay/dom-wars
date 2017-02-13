@@ -2,7 +2,10 @@
   <div class="mdl-grid mdl-grid--no-spacing" v-mdl>
     <div class="mdl-cell mdl-cell--12-col">
       <h5>
-        {{ currentPlayer.name }}'s turn
+        <span class="player-avatar-icon material-icons" :class="playerColorClass">person</span>
+        <span>
+          {{ currentPlayer.name }}'s turn
+        </span>
       </h5>
       <p>
         Move your units and attack your opponent.
@@ -33,6 +36,12 @@ export default {
     ...mapGetters([
       'currentPlayer',
     ]),
+    playerColorClass() {
+      return {
+        'player-color--one': this.currentPlayer.localId === 1,
+        'player-color--two': this.currentPlayer.localId === 2,
+      };
+    },
   },
   methods: {
     ...mapActions([
@@ -53,6 +62,11 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import './../../assets/globals.scss';
+
+.player-avatar-icon {
+  top: 4px;
+  position: relative;
+}
 </style>

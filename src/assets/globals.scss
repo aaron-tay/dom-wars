@@ -65,3 +65,10 @@ $pastel-yellow-hex: #FDFD96;
 
 $player-one-color: $pastel-red-darker;
 $player-two-color: $pastel-gray;
+
+.player-color--one {
+  color: $player-one-color;
+}
+.player-color--two {
+  color: $player-two-color;
+}

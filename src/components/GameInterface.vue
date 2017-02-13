@@ -81,15 +81,4 @@ export default {
 <style lang="scss">
 @import './../assets/globals.scss';
 
-.player-avatar-icon {
-  position: absolute;
-  top: 20px;
-  right: 0;
-}
-.player-color--one {
-  color: $player-one-color;
-}
-.player-color--two {
-  color: $player-two-color;
-}
 </style>

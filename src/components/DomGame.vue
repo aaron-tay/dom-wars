@@ -15,6 +15,7 @@
         <game-interface></game-interface>
       </div>
     </div>
+    <unit-trigger></unit-trigger>
   </div>
 </template>
 
@@ -24,12 +25,15 @@ import { mapActions, mapGetters } from 'vuex';
 import DomGameTile from './DomGameTile';
 import DomGameTileInfo from './DomGameTileInfo';
 import GameInterface from './GameInterface';
+import UnitTrigger from './UnitTrigger';
+import CONSTANTS from './constants';
 
 export default {
   components: {
     DomGameTile,
     DomGameTileInfo,
     GameInterface,
+    UnitTrigger,
   },
   data() {
     return {
@@ -38,9 +42,11 @@ export default {
   computed: {
     ...mapGetters([
       'getWorldDefinition',
-      'isWorldReady',
       'getSelectedTile',
       'getAvailableActions',
+      'getTileFn',
+      'getRangeInfoFn',
+      'currentGamePhase',
     ]),
     selectedTile() {
       return this.getSelectedTile;
@@ -48,20 +54,25 @@ export default {
   },
   methods: {
     ...mapGetters([
-      'getTileFn',
       'getSelectedTile',
     ]),
     ...mapActions([
       'selectTile',
       'unselectTile',
       'moveUnit',
+      'attackUnit',
     ]),
     tile(x, y) {
-      const tile = this.getTileFn()(x, y);
+      const tile = this.getTileFn(x, y);
       tile.isSelected = this.isTileCurrentlySelected(x, y);
+      tile.range = this.getRangeInfoFn(x, y).range;
       return tile;
     },
     onTileClicked(x, y) {
+      if (this.currentGamePhase !== CONSTANTS.GAME_PHASE.PLAYER_TURN) {
+        this.unselectTile();
+        return;
+      }
       if (this.isTileCurrentlySelected(x, y)) {
         this.unselectTile();
         return;
@@ -74,7 +85,15 @@ export default {
         const destination = this.tile(x, y);
         const hasUnitInDestination = !!destination.unit;
         if (hasUnitInSource && !hasUnitInDestination) {
-          this.moveUnit({ source, destination });
+          if (this.isWithinMovementRange(x, y)) {
+            this.moveUnit({ source, destination });
+          }
+          this.unselectTile();
+          return;
+        } else if (hasUnitInSource && hasUnitInDestination) {
+          if (this.isWithinCombatRange(x, y)) {
+            this.attackUnit({ source, destination });
+          }
           this.unselectTile();
           return;
         }
@@ -85,6 +104,16 @@ export default {
     isTileCurrentlySelected(x, y) {
       if (!this.getSelectedTile) { return false; }
       return (this.getSelectedTile.x === x && this.getSelectedTile.y === y);
+    },
+    isWithinMovementRange(x, y) {
+      const range = this.getRangeInfoFn(x, y).range;
+      if (!range) { return false; }
+      return range.movement;
+    },
+    isWithinCombatRange(x, y) {
+      const range = this.getRangeInfoFn(x, y).range;
+      if (!range) { return false; }
+      return range.combat;
     },
   },
 };

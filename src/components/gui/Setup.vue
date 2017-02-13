@@ -23,7 +23,7 @@
     </div>
     <div v-if="currentGamePhase === CONSTANTS.GAME_PHASE.SETUP_WORLD" v-mdl>
       <h5>
-        Generating world
+        Generate world
       </h5>
       <button class="mdl-button mdl-js-button mdl-button--raised" @click="generateWorld">
         regenerate
@@ -78,6 +78,7 @@ export default {
     ...mapGetters([
       'currentGamePhase',
       'getWorldDefinition',
+      'allPlayers',
     ]),
     CONSTANTS() {
       return CONSTANTS;
@@ -90,25 +91,31 @@ export default {
       'addPlayer',
       'setWorld',
     ]),
-    createPlayer(name) {
+    createPlayer(name, localId) {
       return {
         playerId: lodash.uniqueId('pid_'),
         name,
+        localId,
       };
     },
     confirmPlayers() {
       // technically all this should occur transactionally
       const self = this;
-      const players = lodash.map(this.playerNames, (name => self.createPlayer(name)));
+      const players = lodash.map(this.playerNames, (name, index) => {
+        const playerNumber = (index + 1);
+        const player = self.createPlayer(name, playerNumber);
+        return player;
+      });
       lodash.forEach(players, (player => self.addPlayer(player)));
       const playerTurnOrder = lodash.map(players, 'playerId');
       this.setPlayerTurnOrder(playerTurnOrder);
       this.setGamePhase(CONSTANTS.GAME_PHASE.SETUP_WORLD);
     },
     generateWorld() {
-      const definition = this.getWorldDefinition;
-      const terrain = GameEngine.helperGenerateTerrain(definition.width, definition.height);
-      const units = GameEngine.helperGenerateUnits(definition.width, definition.height);
+      const worldDef = this.getWorldDefinition;
+      const allPlayers = this.allPlayers;
+      const terrain = GameEngine.helperGenerateTerrain(worldDef.width, worldDef.height);
+      const units = GameEngine.helperGenerateUnits(worldDef.width, worldDef.height, allPlayers);
       this.setWorld({
         terrain,
         units,
@@ -122,6 +129,9 @@ export default {
     currentGamePhase(newValue, oldValue) {
       if (newValue === CONSTANTS.GAME_PHASE.SETUP_WORLD && oldValue !== newValue) {
         this.generateWorld();
+        // NOTE(ajt): This is just so the 'generate' phase is instantaneous
+        // TODO(ajt): Later add world parameterisation for generation
+        this.confirmWorld();
       }
     },
   },

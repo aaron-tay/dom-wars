@@ -3,6 +3,14 @@ const MAP_DEFINITION = {
   HEIGHT: 8,
 };
 
+const TILE_CODES = {
+  EMPTY: 0, // don't use
+  GROUND: 1,
+  GRASS: 2,
+  WATER: 3,
+  SAND: 4,
+};
+
 const RANGE_CODES = {
   EMPTY: 0,
   MOVEMENT: 1,
@@ -36,4 +44,5 @@ export default {
   GAME_PHASE,
   UNIT_BEHAVIOUR,
   PLAYER_STATE,
+  TILE_CODES,
 };

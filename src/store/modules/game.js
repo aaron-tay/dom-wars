@@ -37,19 +37,6 @@ const getters = {
     x: state.selection.x,
     y: state.selection.y,
   })),
-  getAvailableActions: (state, allGetters) => {
-    const maybeUnit = (allGetters.getSelectedTile || {}).unit;
-    return {
-      SELECT: !allGetters.hasSelection,
-      UNSELECT: allGetters.hasSelection,
-      MOVE: allGetters.canUnitDoMovementFn(maybeUnit),
-      ACTION: {
-        ATTACK: allGetters.canUnitDoActionFn(maybeUnit),
-      },
-      END_TURN: true,
-      SURRENDER: true,
-    };
-  },
 };
 
 const GAME_PHASE_SET = 'GAME:PHASE:SET';

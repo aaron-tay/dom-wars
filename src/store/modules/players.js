@@ -38,10 +38,11 @@ const PLAYER_REMOVE = 'PLAYER:REMOVE';
 const PLAYER_CLEAR_ALL = 'PLAYER:CLEAR_ALL';
 
 const actions = {
-  addPlayer({ commit }, { playerId, name }) {
+  addPlayer({ commit }, { playerId, name, localId }) {
     commit(PLAYER_ADD, {
       playerId,
       name,
+      localId,
     });
   },
   removePlayer({ commit }, { playerId }) {
@@ -56,10 +57,11 @@ const actions = {
 
 /* eslint-disable no-param-reassign */
 const mutations = {
-  [PLAYER_ADD](state, { playerId, name }) {
+  [PLAYER_ADD](state, { playerId, name, localId }) {
     Vue.set(state.players, playerId, {
       playerId,
       name,
+      localId,
     });
   },
   [PLAYER_REMOVE](state, { playerId }) {

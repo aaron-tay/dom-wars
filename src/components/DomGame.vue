@@ -23,7 +23,6 @@
 import { mapActions, mapGetters } from 'vuex';
 // import lodash from 'lodash';
 import DomGameTile from './DomGameTile';
-import DomGameTileInfo from './DomGameTileInfo';
 import GameInterface from './GameInterface';
 import UnitTrigger from './UnitTrigger';
 import CONSTANTS from './constants';
@@ -31,7 +30,6 @@ import CONSTANTS from './constants';
 export default {
   components: {
     DomGameTile,
-    DomGameTileInfo,
     GameInterface,
     UnitTrigger,
   },
@@ -43,7 +41,6 @@ export default {
     ...mapGetters([
       'getWorldDefinition',
       'getSelectedTile',
-      'getAvailableActions',
       'getTileFn',
       'getRangeInfoFn',
       'currentGamePhase',
@@ -54,9 +51,6 @@ export default {
     },
   },
   methods: {
-    ...mapGetters([
-      'getSelectedTile',
-    ]),
     ...mapActions([
       'selectTile',
       'unselectTile',
@@ -80,8 +74,8 @@ export default {
       }
 
       // Basic 'can move logic'
-      if (this.getSelectedTile) {
-        const source = this.getSelectedTile;
+      if (this.selectedTile) {
+        const source = this.selectedTile;
         const hasUnitInSource = !!source.unit;
         const destination = this.tile(x, y);
         const hasUnitInDestination = !!destination.unit;
@@ -108,8 +102,8 @@ export default {
       this.selectTile({ x, y });
     },
     isTileCurrentlySelected(x, y) {
-      if (!this.getSelectedTile) { return false; }
-      return (this.getSelectedTile.x === x && this.getSelectedTile.y === y);
+      if (!this.selectedTile) { return false; }
+      return (this.selectedTile.x === x && this.selectedTile.y === y);
     },
     isWithinMovementRange(x, y) {
       const range = this.getRangeInfoFn(x, y).range;

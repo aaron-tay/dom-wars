@@ -8,16 +8,20 @@
       </span>
     </div>
 
-    <div class="tile-layer" v-if="tile.range">
-      <div class="info-range" :class="rangeLayerClass">
+    <transition name="fade">
+      <div class="tile-layer" v-if="tile.range">
+        <div class="info-range" :class="rangeLayerClass">
+        </div>
       </div>
-    </div>
+    </transition>
 
-    <div class="tile-layer" v-if="tile.unit">
-      <div class="content-unit" :class="unitLayerClass">
-        {{ unitLayer.hp }}
+    <transition name="fade">
+      <div class="tile-layer" v-if="tile.unit">
+        <div class="content-unit" :class="unitLayerClass">
+          {{ unitLayer.hp }}
+        </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -200,5 +204,12 @@ $tile-size-px: 64px;
 }
 .info-range--blocked {
   background-color: transparentize($pastel-gray, 0.5);
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .2s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
 }
 </style>

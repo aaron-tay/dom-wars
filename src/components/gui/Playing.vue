@@ -46,16 +46,17 @@ export default {
   methods: {
     ...mapActions([
       'setGamePhase',
-      'finishCurrentPlayerTurn',
-      'setGamePhase',
+      'playerRelinquishTurn',
+      'playerRelinquishGame',
     ]),
     startGame() {
       this.setGamePhase(CONSTANTS.GAME_PHASE.SETUP_PLAYERS);
     },
     currentPlayerEndTurn() {
-      this.finishCurrentPlayerTurn();
+      this.playerRelinquishTurn();
     },
     currentPlayerSurrender() {
+      this.playerRelinquishGame(this.currentPlayer.playerId);
       this.setGamePhase(CONSTANTS.GAME_PHASE.TITLE);
     },
   },

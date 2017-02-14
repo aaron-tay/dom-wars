@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import lodash from 'lodash';
-// import * as types from './../mutation-types';
+import * as MUTATIONS from './../mutation-types';
 
 const localState = {
   /*
@@ -61,9 +61,7 @@ const getters = {
 };
 
 const WORLD_LAYERS_SET = 'WORLD:LAYERS:SET';
-const WORLD_UNIT_MOVE = 'WORLD:UNIT:MOVE';
 const WORLD_UNIT_RANGE_SET = 'WORLD:UNIT_RANGE:SET';
-const WORLD_UNIT_ATTACK = 'WORLD:UNIT:ATTACK';
 
 const actions = {
   setWorld({ commit }, { terrain, units }) {
@@ -72,22 +70,14 @@ const actions = {
       units,
     });
   },
-  moveUnit({ commit }, { source, destination }) {
-    commit(WORLD_UNIT_MOVE, {
-      source,
-      destination,
-    });
-  },
   setRangeArea({ commit }, rangeArea = {}) {
     commit(WORLD_UNIT_RANGE_SET, { rangeArea });
   },
-  attackUnit({ commit }, { source, destination }) {
-    commit(WORLD_UNIT_ATTACK, {
-      source,
-      destination,
-    });
-  },
 };
+
+function coordinate(x, y) {
+  return `${x}_${y}`;
+}
 
 /* eslint-disable no-param-reassign */
 const mutations = {
@@ -100,27 +90,22 @@ const mutations = {
     Vue.set(state.layers, 'units', units);
     Vue.set(state.layers, 'range', {});
   },
-  [WORLD_UNIT_MOVE](state, { source, destination }) {
-    const sourceKey = `${source.x}_${source.y}`;
-    const destinationKey = `${destination.x}_${destination.y}`;
-    const unit = state.layers.units[sourceKey];
-    Vue.delete(state.layers.units, sourceKey);
-    Vue.set(state.layers.units, destinationKey, unit);
-  },
   [WORLD_UNIT_RANGE_SET](state, { rangeArea }) {
     Vue.delete(state.layers, 'range');
     Vue.set(state.layers, 'range', rangeArea);
   },
-  [WORLD_UNIT_ATTACK](state, { source, destination }) {
-    const sourceKey = `${source.x}_${source.y}`;
-    const destinationKey = `${destination.x}_${destination.y}`;
-    const attacker = state.layers.units[sourceKey];
-    const defender = state.layers.units[destinationKey];
-    const damage = Math.max(attacker.attack - defender.defense, 1);
-    defender.hp -= damage;
-    if (defender.hp <= 0) {
-      Vue.delete(state.layers.units, destinationKey);
-    }
+  [MUTATIONS.TILE_REMOVE_UNIT](state, { x, y }) {
+    const key = coordinate(x, y);
+    Vue.delete(state.layers.units, key);
+  },
+  [MUTATIONS.TILE_PLACE_UNIT](state, { x, y, unit }) {
+    const key = coordinate(x, y);
+    Vue.set(state.layers.units, key, unit);
+  },
+  [MUTATIONS.UNIT_REDUCE_HP](state, { x, y, amount }) {
+    const key = coordinate(x, y);
+    const unit = state.layers.units[key];
+    unit.hp -= amount;
   },
 };
 /* eslint-disable no-param-reassign */

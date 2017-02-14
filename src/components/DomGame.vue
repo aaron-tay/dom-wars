@@ -52,10 +52,10 @@ export default {
   },
   methods: {
     ...mapActions([
-      'selectTile',
-      'unselectTile',
-      'moveUnit',
-      'attackUnit',
+      'playerSelectTile',
+      'playerUnselectTile',
+      'playerOrderUnitMove',
+      'playerOrderUnitAttack',
     ]),
     tile(x, y) {
       const tile = this.getTileFn(x, y);
@@ -65,11 +65,11 @@ export default {
     },
     onTileClicked(x, y) {
       if (this.currentGamePhase !== CONSTANTS.GAME_PHASE.PLAYER_TURN) {
-        this.unselectTile();
+        this.playerUnselectTile();
         return;
       }
       if (this.isTileCurrentlySelected(x, y)) {
-        this.unselectTile();
+        this.playerUnselectTile();
         return;
       }
 
@@ -82,24 +82,24 @@ export default {
         if (hasUnitInSource) {
           const currentPlayerOwnsSourceUnit = this.currentPlayer.playerId === source.unit.ownerId;
           if (!currentPlayerOwnsSourceUnit) {
-            this.unselectTile();
+            this.playerUnselectTile();
           } else if (!hasUnitInDestination) {
             if (this.isWithinMovementRange(x, y)) {
-              this.moveUnit({ source, destination });
+              this.playerOrderUnitMove({ source, destination });
             }
-            this.unselectTile();
+            this.playerUnselectTile();
             return;
           } else if (hasUnitInDestination) {
             if (this.isWithinCombatRange(x, y)) {
-              this.attackUnit({ source, destination });
+              this.playerOrderUnitAttack({ source, destination });
             }
-            this.unselectTile();
+            this.playerUnselectTile();
             return;
           }
         }
       }
 
-      this.selectTile({ x, y });
+      this.playerSelectTile({ x, y });
     },
     isTileCurrentlySelected(x, y) {
       if (!this.selectedTile) { return false; }

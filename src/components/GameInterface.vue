@@ -7,22 +7,12 @@
       <template v-if="isSetupPhase">
         <gui-setup></gui-setup>
       </template>
-      <div v-if="isPlayingPhase">
+      <template v-if="isPlayingPhase">
         <gui-playing></gui-playing>
-      </div>
-      <div v-if="isGameOverPhase">
-        <h5>
-          Game Over
-        </h5>
-        <p>
-          {{ winningPlayer.name }} has won the game.
-        </p>
-        <button class="mdl-button mdl-js-button mdl-button--raised" @click="gameRestart">
-          play again
-        </button>
-      </div>
-      <!-- <dom-game-tile-info :tile="selectedTile" v-if="selectedTile"></dom-game-tile-info>
-      {{selected}}: {{ selectedTile }} -->
+      </template>
+      <template v-if="isGameOverPhase">
+        <gui-game-over></gui-game-over>
+      </template>
     </div>
   </div>
 </template>
@@ -34,12 +24,14 @@ import CONSTANTS from './constants';
 import GuiTitle from './gui/Title';
 import GuiSetup from './gui/Setup';
 import GuiPlaying from './gui/Playing';
+import GuiGameOver from './gui/GameOver';
 
 export default {
   components: {
     GuiTitle,
     GuiSetup,
     GuiPlaying,
+    GuiGameOver,
   },
   created() {
     this.setGamePhase(CONSTANTS.GAME_PHASE.TITLE);

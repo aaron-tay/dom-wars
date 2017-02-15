@@ -18,8 +18,13 @@
       <button class="mdl-button mdl-js-button mdl-button--raised" @click="currentPlayerSurrender">
         surrender
       </button>
-      <!-- <dom-game-tile-info :tile="selectedTile" v-if="selectedTile"></dom-game-tile-info>
-      {{ getAvailableActions }} -->
+    </div>
+    <div class="mdl-cell mdl-cell--12-col">
+      <!-- Empty spacing -->
+      <br />
+    </div>
+    <div class="mdl-cell mdl-cell--12-col">
+      <dom-game-tile-info :tile="selectedTile" v-if="selectedTile"></dom-game-tile-info>
     </div>
   </div>
 </template>
@@ -27,15 +32,23 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import CONSTANTS from './../constants';
+import DomGameTileInfo from './../DomGameTileInfo';
 
 export default {
+  components: {
+    DomGameTileInfo,
+  },
   data() {
     return {};
   },
   computed: {
     ...mapGetters([
       'currentPlayer',
+      'getSelectedTile',
     ]),
+    selectedTile() {
+      return this.getSelectedTile;
+    },
     playerColorClass() {
       return {
         'player-color--one': this.currentPlayer.localId === 1,
@@ -49,15 +62,15 @@ export default {
       'playerRelinquishTurn',
       'playerRelinquishGame',
     ]),
-    startGame() {
-      this.setGamePhase(CONSTANTS.GAME_PHASE.SETUP_PLAYERS);
-    },
     currentPlayerEndTurn() {
       this.playerRelinquishTurn();
     },
     currentPlayerSurrender() {
-      this.playerRelinquishGame(this.currentPlayer.playerId);
-      this.setGamePhase(CONSTANTS.GAME_PHASE.TITLE);
+      this.playerRelinquishGame({
+        playerId: this.currentPlayer.playerId,
+      });
+      // TODO(ajt): This is just temporary
+      this.setGamePhase(CONSTANTS.GAME_PHASE.GAME_OVER);
     },
   },
 };

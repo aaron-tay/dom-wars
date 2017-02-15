@@ -128,9 +128,9 @@ export default {
   watch: {
     currentGamePhase(newValue, oldValue) {
       if (newValue === CONSTANTS.GAME_PHASE.SETUP_WORLD && oldValue !== newValue) {
-        this.generateWorld();
         // NOTE(ajt): This is just so the 'generate' phase is instantaneous
         // TODO(ajt): Later add world parameterisation for generation
+        this.generateWorld();
         this.confirmWorld();
       }
     },

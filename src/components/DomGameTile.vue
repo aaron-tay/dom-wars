@@ -71,9 +71,9 @@ export default {
     unitLayerClass() {
       if (!this.unitLayer) { return {}; }
       return {
-        'content-unit--pawn': this.unitLayer.type === 0,
-        'content-unit--knight': this.unitLayer.type === 1,
-        'content-unit--bishop': this.unitLayer.type === 2,
+        'content-unit--pawn': this.unitLayer.type === 1,
+        'content-unit--knight': this.unitLayer.type === 2,
+        'content-unit--bishop': this.unitLayer.type === 3,
         'unit-owner--player-one': this.getPlayerById(this.unitLayer.ownerId).localId === 1,
         'unit-owner--player-two': this.getPlayerById(this.unitLayer.ownerId).localId === 2,
       };
@@ -118,6 +118,11 @@ $tile-size-px: 64px;
   display: table-cell;
   // NOTE(ajt): not sure why I need 'table-cell'... inline-block should work...
   z-index: $resting-z-index;
+}
+
+.tile:hover {
+  border: 1px solid $color-selected;
+  z-index: $selected-z-index;
 }
 
 .tile-layer {

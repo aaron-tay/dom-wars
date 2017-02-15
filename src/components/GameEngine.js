@@ -9,10 +9,10 @@ export function createUnit(ownerId, type) {
   return {
     ownerId,
     type,
-    hp: (type + 1) * 3,
+    hp: (type) * 3,
     attack: (type + 1),
     defense: (type),
-    speed: (type + 2),  // how far can the unit move
+    speed: (type + 1),  // how far can the unit move
     behaviour: CONSTANTS.UNIT_BEHAVIOUR.MOVE_AND_ACTION,
     energy: {
       movement: true,
@@ -99,7 +99,8 @@ export function helperGenerateUnits(width, height, allPlayers) {
     if ((y + x) % 2 === 0) { return null; }
 
     const ownerId = (x <= 3 ? allPlayers[0].playerId : allPlayers[1].playerId);
-    return createUnit(ownerId, lodash.random(0, 2));
+    const unitType = lodash.random(CONSTANTS.UNIT_CODES.PAWN, CONSTANTS.UNIT_CODES.BISHOP);
+    return createUnit(ownerId, unitType);
   });
 }
 

@@ -49,6 +49,10 @@ export default {
       changelog: `
 # Changelog
 
+### v0.0.2
+Added concept of game phases; the basic flow of events is;
+ Title -> Setup -> Playing -> GameOver -> Title
+Basic combat system implemented to allow units to deal damage to each other
 ### v0.0.1
 Added concept of 'player turns'
 Players can only move units owned by them

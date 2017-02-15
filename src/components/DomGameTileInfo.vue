@@ -8,16 +8,13 @@
           <h2 class="mdl-card__title-text">
             <dom-game-tile :tile="tile"></dom-game-tile>
           </h2>
-        </div>
-        <div class="mdl-card__supporting-text" v-if="tile">
-          <p>
+          <span class="tile-info__terrain-text">
             {{ terrainInfo }}
-          </p>
+          </span>
+        </div>
+        <div class="mdl-card__supporting-text">
           <p>
-            {{ unitInfo }}
-          </p>
-          <p>
-            {{ rangeInfo }}
+            Contains: {{ unitInfo }}
           </p>
         </div>
         <div class="mdl-card__actions mdl-card--border">
@@ -53,15 +50,17 @@ export default {
   data() {
     return {
       terrain: {
-        0: 'Ground',
-        1: 'Grass',
-        2: 'Water',
-        3: 'Sand',
+        0: 'Unknown',
+        1: 'Ground',
+        2: 'Grass',
+        3: 'Water',
+        4: 'Sand',
       },
       unit: {
-        0: 'Pawn',
-        1: 'Knight',
-        2: 'Bishop',
+        0: 'Unknown',
+        1: 'Pawn',
+        2: 'Knight',
+        3: 'Bishop',
       },
       range: {
         0: 'None',
@@ -87,7 +86,7 @@ export default {
       return this.terrain[this.terrainLayer] || 'unknown';
     },
     unitInfo() {
-      if (!this.unitLayer) { return 'unknown'; }
+      if (!this.unitLayer) { return 'nothing'; }
       return this.unit[this.unitLayer.type] || 'unknown';
     },
     rangeInfo() {
@@ -99,4 +98,9 @@ export default {
 
 <style lang="scss">
 @import './../assets/globals.scss';
+
+.tile-info__terrain-text {
+  margin-left: 16px;
+  font-size: 24px;
+}
 </style>

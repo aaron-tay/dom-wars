@@ -65,7 +65,9 @@ const mutations = {
     state.playerTurnOrder.push(currentPlayerId);
   },
   [MUTATIONS.PLAYER_GAME_END](state, { playerId }) {
-    const updatedTurnOrder = lodash.remove(state.playerTurnOrder, item => item === playerId);
+    const updatedTurnOrder = lodash.reject(state.playerTurnOrder, item => (
+      item === playerId
+    ));
     state.playerTurnOrder = updatedTurnOrder;
   },
   [MUTATIONS.TILE_SELECT](state, { x, y }) {

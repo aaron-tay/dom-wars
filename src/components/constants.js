@@ -17,6 +17,13 @@ const RANGE_CODES = {
   COMBAT: 2,
 };
 
+const UNIT_CODES = {
+  EMPTY: 0,
+  PAWN: 1,
+  KNIGHT: 2,
+  BISHOP: 3,
+};
+
 const GAME_PHASE = {
   TITLE: 'TITLE',
   SETUP_GAME: 'SETUP_GAME',
@@ -45,4 +52,5 @@ export default {
   UNIT_BEHAVIOUR,
   PLAYER_STATE,
   TILE_CODES,
+  UNIT_CODES,
 };

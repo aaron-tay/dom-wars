@@ -14,7 +14,7 @@
         </div>
         <div class="mdl-card__supporting-text">
           <p>
-            Contains: {{ unitInfo }}
+            Contains: {{ unitInfo }} (owned by {{ unitOwner }})
           </p>
         </div>
         <div class="mdl-card__actions mdl-card--border">
@@ -88,6 +88,10 @@ export default {
     unitInfo() {
       if (!this.unitLayer) { return 'nothing'; }
       return this.unit[this.unitLayer.type] || 'unknown';
+    },
+    unitOwner() {
+      if (!this.unitLayer) { return 'n/a'; }
+      return this.unitLayer.owner.name;
     },
     rangeInfo() {
       return this.range[this.rangeLayer] || 'unknown';

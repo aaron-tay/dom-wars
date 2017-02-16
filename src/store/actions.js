@@ -30,6 +30,17 @@ export const playerOrderUnitMove = ({ commit, getters }, { source, destination }
     unit,
   });
 
+  // deplete the unit of movement energy
+  // its destination cos the unit has moved :P
+  commit(MUTATIONS.UNIT_SET_ENERGY, {
+    x: destination.x,
+    y: destination.y,
+    energy: {
+      movement: false,
+      action: unit.energy.action,
+    },
+  });
+
   // TODO(ajt): post-movement actions
 };
 
@@ -59,6 +70,16 @@ export const playerOrderUnitAttack = ({ commit }, { source, destination }) => {
     });
   }
 
+  // deplete the attacker of energy
+  commit(MUTATIONS.UNIT_SET_ENERGY, {
+    x: source.x,
+    y: source.y,
+    energy: {
+      movement: false,
+      action: false,
+    },
+  });
+
   // TODO(ajt): post-combat actions
 };
 
@@ -70,6 +91,7 @@ export const playerRelinquishGame = ({ commit }, { playerId }) => {
 // When the current player wants to end their turn
 export const playerRelinquishTurn = ({ commit }) => {
   commit(MUTATIONS.CURRENT_PLAYER_TURN_END);
+  // TODO(ajt): post-turn clean-up like restoring unit energy
 };
 
 // Signal when the specified player is ready to commence the game

@@ -104,6 +104,11 @@ const mutations = {
     const unit = state.layers.units[key];
     unit.hp -= amount;
   },
+  [MUTATIONS.UNIT_SET_ENERGY](state, { x, y, energy }) {
+    const key = core.coordinate(x, y);
+    const unit = state.layers.units[key];
+    unit.energy = energy;
+  },
 };
 /* eslint-disable no-param-reassign */
 

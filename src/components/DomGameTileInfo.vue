@@ -27,6 +27,7 @@
 
 <script>
 import DomGameTile from './DomGameTile';
+import engine from './../engine';
 
 export default {
   components: {
@@ -49,13 +50,6 @@ export default {
   },
   data() {
     return {
-      terrain: {
-        0: 'Unknown',
-        1: 'Ground',
-        2: 'Grass',
-        3: 'Water',
-        4: 'Sand',
-      },
       unit: {
         0: 'Unknown',
         1: 'Pawn',
@@ -83,7 +77,7 @@ export default {
       return this.tile.pathing;
     },
     terrainInfo() {
-      return this.terrain[this.terrainLayer] || 'unknown';
+      return engine.terrain.nameFromCode(this.terrainLayer) || 'unknown';
     },
     unitInfo() {
       if (!this.unitLayer) { return 'nothing'; }

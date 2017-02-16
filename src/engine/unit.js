@@ -1,4 +1,4 @@
-// import lodash from 'lodash';
+import lodash from 'lodash';
 import CONSTANTS from './../components/constants';
 import layer from './layer';
 
@@ -6,6 +6,7 @@ function createUnit(ownerId, type) {
   return {
     ownerId,
     type,
+    unitId: lodash.uniqueId('unit-'),
     hp: (type) * 3,
     attack: (type + 1),
     defense: (type),

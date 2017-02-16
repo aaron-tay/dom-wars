@@ -49,6 +49,8 @@ export default {
       changelog: `
 # Changelog
 
+### v0.0.3
+Added world generation through parameterisation. Densitiy of specific terrains can be adjusted
 ### v0.0.2
 Added concept of game phases; the basic flow of events is;
  Title -> Setup -> Playing -> GameOver -> Title

@@ -25,6 +25,14 @@
       <h5>
         Generate world
       </h5>
+      <!-- TODO(ajt): Make this UI look nicer cos there's huge potential :) -->
+      <div v-for="index in 4" v-mdl>
+        <label class="mdl-slider__label" :for="'terrain-'+terrainName(index)">
+          {{ terrainName(index) }}
+        </label>
+        <input class="mdl-slider mdl-js-slider" :id="'terrain-'+terrainName(index)" type="range" min="0" max="100" v-model="terrainRatios[index]">
+      </div>
+      <br />
       <button class="mdl-button mdl-js-button mdl-button--raised" @click="generateWorld">
         regenerate
       </button>
@@ -64,6 +72,7 @@ import { mapActions, mapGetters } from 'vuex';
 import lodash from 'lodash';
 import CONSTANTS from './../constants';
 import * as GameEngine from './../GameEngine';
+import engine from './../../engine';
 
 export default {
   data() {
@@ -72,6 +81,12 @@ export default {
         'player-1',
         'player-2',
       ],
+      terrainRatios: {
+        1: 50,
+        2: 50,
+        3: 50,
+        4: 50,
+      },
     };
   },
   computed: {
@@ -91,6 +106,9 @@ export default {
       'addPlayer',
       'setWorld',
     ]),
+    terrainName(terrainCode) {
+      return engine.terrain.nameFromCode(terrainCode);
+    },
     createPlayer(name, localId) {
       return {
         playerId: lodash.uniqueId('pid_'),
@@ -114,8 +132,11 @@ export default {
     generateWorld() {
       const worldDef = this.getWorldDefinition;
       const allPlayers = this.allPlayers;
-      const terrain = GameEngine.helperGenerateTerrain(worldDef.width, worldDef.height);
-      const units = GameEngine.helperGenerateUnits(worldDef.width, worldDef.height, allPlayers);
+      const terrainRatios = lodash.mapValues(this.terrainRatios, (item => (
+        lodash.toNumber(item)
+      )));
+      const terrain = GameEngine.helperGenerateTerrain(worldDef, terrainRatios);
+      const units = GameEngine.helperGenerateUnits(worldDef, allPlayers);
       this.setWorld({
         terrain,
         units,
@@ -131,8 +152,14 @@ export default {
         // NOTE(ajt): This is just so the 'generate' phase is instantaneous
         // TODO(ajt): Later add world parameterisation for generation
         this.generateWorld();
-        this.confirmWorld();
+        // this.confirmWorld();
       }
+    },
+    terrainRatios: {
+      deep: true,
+      handler() {
+        this.generateWorld();
+      },
     },
   },
 };

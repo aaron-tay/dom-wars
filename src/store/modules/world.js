@@ -13,7 +13,7 @@ const localState = {
   layers: {
     terrain: {},
     units: {},
-    range: {},
+    pathing: {},
   },
   definition: {
     width: 10,
@@ -52,17 +52,17 @@ const getters = {
     if (!selectedTile) { return null; }
     return selectedTile.unit;
   },
-  getRangeInfoFn: state => (x, y) => {
+  getPathingInfoFn: state => (x, y) => {
     const key = core.coordinate(x, y);
-    const range = state.layers.range[key] || null;
+    const pathing = state.layers.pathing[key] || null;
     return {
-      range,
+      pathing,
     };
   },
 };
 
 const WORLD_LAYERS_SET = 'WORLD:LAYERS:SET';
-const WORLD_UNIT_RANGE_SET = 'WORLD:UNIT_RANGE:SET';
+const WORLD_LAYER_PATHING_SET = 'WORLD:LAYER:PATHING:SET';
 
 const actions = {
   setWorld({ commit }, { terrain, units }) {
@@ -71,8 +71,8 @@ const actions = {
       units,
     });
   },
-  setRangeArea({ commit }, rangeArea = {}) {
-    commit(WORLD_UNIT_RANGE_SET, { rangeArea });
+  setPathingLayer({ commit }, pathingLayer = {}) {
+    commit(WORLD_LAYER_PATHING_SET, { pathingLayer });
   },
 };
 
@@ -82,14 +82,14 @@ const mutations = {
     console.log(terrain, units);
     Vue.delete(state.layers, 'terrain');
     Vue.delete(state.layers, 'units');
-    Vue.delete(state.layers, 'range');
+    Vue.delete(state.layers, 'pathing');
     Vue.set(state.layers, 'terrain', terrain);
     Vue.set(state.layers, 'units', units);
-    Vue.set(state.layers, 'range', {});
+    Vue.set(state.layers, 'pathing', {});
   },
-  [WORLD_UNIT_RANGE_SET](state, { rangeArea }) {
-    Vue.delete(state.layers, 'range');
-    Vue.set(state.layers, 'range', rangeArea);
+  [WORLD_LAYER_PATHING_SET](state, { pathingLayer }) {
+    Vue.delete(state.layers, 'pathing');
+    Vue.set(state.layers, 'pathing', pathingLayer);
   },
   [MUTATIONS.TILE_REMOVE_UNIT](state, { x, y }) {
     const key = core.coordinate(x, y);

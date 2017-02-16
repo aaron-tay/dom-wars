@@ -1,7 +1,7 @@
 import core from './core';
 import layer from './layer';
 
-function rangeKey(x, y) {
+function pathKey(x, y) {
   return core.coordinate(x, y);
 }
 
@@ -28,19 +28,19 @@ function canMoveIntoTile(tile) {
   return !hasMovementObstacle;
 }
 
-function generatePathingArea(x, y, distance, world, iRange = {}) {
-  const range = iRange;
-  if (distance < 0) { return range; }
+function generatePathingArea(x, y, distance, world, iVisitedPaths = {}) {
+  const visitedPaths = iVisitedPaths;
+  if (distance < 0) { return visitedPaths; }
 
   const destinationTile = world.getTileFn(x, y);
-  if (!destinationTile) { return range; }
+  if (!destinationTile) { return visitedPaths; }
 
-  const key = rangeKey(x, y);
-  const existingRangeInfo = range[key];
-  // console.log('GMA', key, existingRangeInfo, !!existingRangeInfo, destinationTile, range);
+  const key = pathKey(x, y);
+  const existingRangeInfo = visitedPaths[key];
+  // console.log('GMA', key, existingRangeInfo, !!existingRangeInfo, destinationTile, paths);
   // NOTE(ajt): Distance check to ensure we have the greatest area possibly covered
   if (existingRangeInfo && distance <= existingRangeInfo.distance) {
-    return range;
+    return visitedPaths;
   }
 
   const currentUnit = world.currentUnit;
@@ -48,18 +48,18 @@ function generatePathingArea(x, y, distance, world, iRange = {}) {
   const combat = hasOpponentUnitInTile(destinationTile, currentUnit);
   // an enemy in any tile considered is combat-engageable
 
-  range[key] = {
+  visitedPaths[key] = {
     movement,
     combat,
     distance,
   };
 
   const penalty = tileMovementPenalty(destinationTile, currentUnit);
-  generatePathingArea(x + 1, y, distance - penalty, world, range);
-  generatePathingArea(x, y + 1, distance - penalty, world, range);
-  generatePathingArea(x - 1, y, distance - penalty, world, range);
-  generatePathingArea(x, y - 1, distance - penalty, world, range);
-  return range;
+  generatePathingArea(x + 1, y, distance - penalty, world, visitedPaths);
+  generatePathingArea(x, y + 1, distance - penalty, world, visitedPaths);
+  generatePathingArea(x - 1, y, distance - penalty, world, visitedPaths);
+  generatePathingArea(x, y - 1, distance - penalty, world, visitedPaths);
+  return visitedPaths;
 }
 
 function generatePathingLayerForUnit({ world }) {
@@ -67,11 +67,11 @@ function generatePathingLayerForUnit({ world }) {
   const startX = world.currentTile.x;
   const startY = world.currentTile.y;
   const distance = world.currentUnit.speed;
-  const range = generatePathingArea(startX, startY, distance, world);
+  const pathingArea = generatePathingArea(startX, startY, distance, world);
 
   const pathingLayer = layer.createLayer(dimensions, (x, y) => {
-    const key = rangeKey(x, y);
-    return range[key];
+    const key = pathKey(x, y);
+    return pathingArea[key];
   });
 
   return pathingLayer;

@@ -9,8 +9,8 @@
     </div>
 
     <transition name="fade">
-      <div class="tile-layer" v-if="tile.range">
-        <div class="info-range" :class="rangeLayerClass">
+      <div class="tile-layer" v-if="tile.pathing">
+        <div class="info-pathing" :class="pathingLayerClass">
         </div>
       </div>
     </transition>
@@ -38,7 +38,7 @@ export default {
           y: 0,
           terrain: {},
           unit: {},
-          range: {},
+          pathing: {},
           isSelected: false,
         };
       },
@@ -57,8 +57,8 @@ export default {
     unitLayer() {
       return this.tile.unit;
     },
-    rangeLayer() {
-      return this.tile.range;
+    pathingLayer() {
+      return this.tile.pathing;
     },
     terrainLayerClass() {
       return {
@@ -78,11 +78,11 @@ export default {
         'unit-owner--player-two': this.getPlayerById(this.unitLayer.ownerId).localId === 2,
       };
     },
-    rangeLayerClass() {
-      if (!this.rangeLayer) { return {}; }
+    pathingLayerClass() {
+      if (!this.pathingLayer) { return {}; }
       return {
-        'info-range--movement': this.rangeLayer.movement,
-        'info-range--combat': this.rangeLayer.combat,
+        'info-pathing--movement': this.pathingLayer.movement,
+        'info-pathing--combat': this.pathingLayer.combat,
       };
     },
   },
@@ -94,15 +94,15 @@ export default {
 
 $fade-duration-ms: 0.75s;
 $resting-z-index: 0;
-$range-area-z-index: ($resting-z-index + 50);
+$pathing-area-z-index: ($resting-z-index + 50);
 $selected-z-index: ($resting-z-index + 100);
 
 $color-info: #2525d9;
 $color-danger: #d92525;
 $color-success: #25d925;
 $color-selected: $color-info;
-$color-range-movement: $color-info;
-$color-range-combat: $color-danger;
+$color-pathing-movement: $color-info;
+$color-pathing-combat: $color-danger;
 
 $tile-size-px: 64px;
 
@@ -143,8 +143,8 @@ $tile-size-px: 64px;
   z-index: $selected-z-index;
 }
 
-.tile--range-area {
-  z-index: $range-area-z-index;
+.tile--pathing-area {
+  z-index: $pathing-area-z-index;
 }
 
 .terrain--grass {
@@ -192,7 +192,7 @@ $tile-size-px: 64px;
   border-radius: 4px;
 }
 
-.info-range {
+.info-pathing {
   position: relative;
   margin: auto;
   top: 10%;
@@ -201,13 +201,13 @@ $tile-size-px: 64px;
   text-align: center;
   border-radius: 4px;
 }
-.info-range--movement {
-  background-color: transparentize($color-range-movement, 0.5);
+.info-pathing--movement {
+  background-color: transparentize($color-pathing-movement, 0.5);
 }
-.info-range--combat {
-  background-color: transparentize($color-range-combat, 0.5);
+.info-pathing--combat {
+  background-color: transparentize($color-pathing-combat, 0.5);
 }
-.info-range--blocked {
+.info-pathing--blocked {
   background-color: transparentize($pastel-gray, 0.5);
 }
 

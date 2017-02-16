@@ -41,7 +41,7 @@ export default {
           y: 0,
           terrain: {},
           unit: {},
-          range: {},
+          pathing: {},
           isSelected: false,
         };
       },
@@ -62,7 +62,7 @@ export default {
         2: 'Knight',
         3: 'Bishop',
       },
-      range: {
+      pathing: {
         0: 'None',
         1: 'Movement',
         2: 'Combat',
@@ -79,8 +79,8 @@ export default {
     unitLayer() {
       return this.tile.unit;
     },
-    rangeLayer() {
-      return this.tile.range;
+    pathingLayer() {
+      return this.tile.pathing;
     },
     terrainInfo() {
       return this.terrain[this.terrainLayer] || 'unknown';
@@ -93,8 +93,8 @@ export default {
       if (!this.unitLayer) { return 'n/a'; }
       return this.unitLayer.owner.name;
     },
-    rangeInfo() {
-      return this.range[this.rangeLayer] || 'unknown';
+    pathingInfo() {
+      return this.pathing[this.pathingLayer] || 'unknown';
     },
   },
 };

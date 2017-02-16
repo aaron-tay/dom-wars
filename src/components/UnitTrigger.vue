@@ -23,15 +23,14 @@ export default {
   },
   methods: {
     ...mapActions([
-      'setRangeArea',
+      'setPathingLayer',
     ]),
   },
   watch: {
     getSelectedUnit(currentUnit, previousUnit) {
       if (currentUnit === previousUnit) { return; }
       if (!currentUnit) {
-        this.range = {};
-        this.setRangeArea({});
+        this.setPathingLayer({});
         return;
       }
 
@@ -46,7 +45,7 @@ export default {
         world,
       });
 
-      this.setRangeArea(pathingLayer);
+      this.setPathingLayer(pathingLayer);
     },
   },
 };

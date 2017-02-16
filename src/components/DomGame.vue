@@ -42,7 +42,7 @@ export default {
       'getWorldDefinition',
       'getSelectedTile',
       'getTileFn',
-      'getRangeInfoFn',
+      'getPathingInfoFn',
       'currentGamePhase',
       'currentPlayer',
     ]),
@@ -60,7 +60,7 @@ export default {
     tile(x, y) {
       const tile = this.getTileFn(x, y);
       tile.isSelected = this.isTileCurrentlySelected(x, y);
-      tile.range = this.getRangeInfoFn(x, y).range;
+      tile.pathing = this.getPathingInfoFn(x, y).pathing;
       return tile;
     },
     onTileClicked(x, y) {
@@ -106,14 +106,14 @@ export default {
       return (this.selectedTile.x === x && this.selectedTile.y === y);
     },
     isWithinMovementRange(x, y) {
-      const range = this.getRangeInfoFn(x, y).range;
-      if (!range) { return false; }
-      return range.movement;
+      const pathing = this.getPathingInfoFn(x, y).pathing;
+      if (!pathing) { return false; }
+      return pathing.movement;
     },
     isWithinCombatRange(x, y) {
-      const range = this.getRangeInfoFn(x, y).range;
-      if (!range) { return false; }
-      return range.combat;
+      const pathing = this.getPathingInfoFn(x, y).pathing;
+      if (!pathing) { return false; }
+      return pathing.combat;
     },
   },
 };

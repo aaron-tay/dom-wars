@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import core from './core';
 
-// Creates a layer of the given dimentions and placing content according to the function
+// Creates a layer of the given dimension and placing content according to the function
 // Layer has the structure: { <coordinate>: <contentFn(x,y)>, ... }
 function createLayer(dimensions, contentFn) {
   const width = dimensions.width;

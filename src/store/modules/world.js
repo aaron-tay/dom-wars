@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import lodash from 'lodash';
 import * as MUTATIONS from './../mutation-types';
+import core from './../../engine/core';
 
 const localState = {
   /*
@@ -28,8 +29,7 @@ const getters = {
     if (x < 0 || x > state.definition.width || y < 0 || y > state.definition.height) {
       return null;
     }
-    // TODO(ajt): DEPRECATED - use engine.core.coordinate
-    const key = `${x}_${y}`;
+    const key = core.coordinate(x, y);
     const terrain = state.layers.terrain[key] || null;
     const unit = state.layers.units[key] || null;
     if (unit) {
@@ -53,8 +53,7 @@ const getters = {
     return selectedTile.unit;
   },
   getRangeInfoFn: state => (x, y) => {
-    // TODO(ajt): DEPRECATED - use engine.core.coordinate
-    const key = `${x}_${y}`;
+    const key = core.coordinate(x, y);
     const range = state.layers.range[key] || null;
     return {
       range,
@@ -77,11 +76,6 @@ const actions = {
   },
 };
 
-// TODO(ajt): DEPRECATED - use engine.core.coordinate
-function coordinate(x, y) {
-  return `${x}_${y}`;
-}
-
 /* eslint-disable no-param-reassign */
 const mutations = {
   [WORLD_LAYERS_SET](state, { terrain, units }) {
@@ -98,15 +92,15 @@ const mutations = {
     Vue.set(state.layers, 'range', rangeArea);
   },
   [MUTATIONS.TILE_REMOVE_UNIT](state, { x, y }) {
-    const key = coordinate(x, y);
+    const key = core.coordinate(x, y);
     Vue.delete(state.layers.units, key);
   },
   [MUTATIONS.TILE_PLACE_UNIT](state, { x, y, unit }) {
-    const key = coordinate(x, y);
+    const key = core.coordinate(x, y);
     Vue.set(state.layers.units, key, unit);
   },
   [MUTATIONS.UNIT_REDUCE_HP](state, { x, y, amount }) {
-    const key = coordinate(x, y);
+    const key = core.coordinate(x, y);
     const unit = state.layers.units[key];
     unit.hp -= amount;
   },

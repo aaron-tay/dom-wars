@@ -3,6 +3,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import core from './../engine/core';
 
 export default {
   data() {
@@ -24,8 +25,7 @@ export default {
       'setRangeArea',
     ]),
     rangeKey(x, y) {
-      // TODO(ajt): DEPRECATED - use engine.core.coordinate
-      return `${x}_${y}`;
+      return core.coordinate(x, y);
     },
     hasOpponentUnitInTile(tile) {
       // definition of 'opponent' is based on the selectedUnit

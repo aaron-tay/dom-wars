@@ -28,6 +28,7 @@ const getters = {
     if (x < 0 || x > state.definition.width || y < 0 || y > state.definition.height) {
       return null;
     }
+    // TODO(ajt): DEPRECATED - use engine.core.coordinate
     const key = `${x}_${y}`;
     const terrain = state.layers.terrain[key] || null;
     const unit = state.layers.units[key] || null;
@@ -52,6 +53,7 @@ const getters = {
     return selectedTile.unit;
   },
   getRangeInfoFn: state => (x, y) => {
+    // TODO(ajt): DEPRECATED - use engine.core.coordinate
     const key = `${x}_${y}`;
     const range = state.layers.range[key] || null;
     return {
@@ -75,6 +77,7 @@ const actions = {
   },
 };
 
+// TODO(ajt): DEPRECATED - use engine.core.coordinate
 function coordinate(x, y) {
   return `${x}_${y}`;
 }

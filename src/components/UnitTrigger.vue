@@ -24,6 +24,7 @@ export default {
       'setRangeArea',
     ]),
     rangeKey(x, y) {
+      // TODO(ajt): DEPRECATED - use engine.core.coordinate
       return `${x}_${y}`;
     },
     hasOpponentUnitInTile(tile) {
@@ -48,7 +49,7 @@ export default {
     },
     generateRangeArea(x, y, distance, iRange = {}) {
       const range = iRange;
-      if (distance <= 0) { return range; }
+      if (distance < 0) { return range; }
 
       const destinationTile = this.getTileFn(x, y);
       if (!destinationTile) { return range; }

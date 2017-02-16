@@ -1,34 +1,10 @@
 import lodash from 'lodash';
 import CONSTANTS from './constants';
+import engine from './../engine';
 
+// TODO(ajt): DEPRECATED - use engine.core.coordinate
 export function coord(x, y) {
   return `${x}_${y}`;
-}
-
-export function createUnit(ownerId, type) {
-  return {
-    ownerId,
-    type,
-    hp: (type) * 3,
-    attack: (type + 1),
-    defense: (type),
-    speed: (type + 1),  // how far can the unit move
-    behaviour: CONSTANTS.UNIT_BEHAVIOUR.MOVE_AND_ACTION,
-    energy: {
-      movement: true,
-      action: true,
-    },
-  };
-}
-
-export function unitCanDoMovement(unit) {
-  if (!unit || !unit.energy) { return false; }
-  return unit.energy.movement;
-}
-
-export function unitCanDoAction(unit) {
-  if (!unit || !unit.energy) { return false; }
-  return unit.energy.action;
 }
 
 export function createPlayer(playerId, name) {
@@ -73,6 +49,19 @@ export function worldTile(world, x, y) {
   };
 }
 
+export function helperGenerateTerrain(width, height) {
+  const dimensions = {
+    width,
+    height,
+  };
+  const terrainRatios = {};
+  terrainRatios[CONSTANTS.TILE_CODES.GROUND] = 10;
+  terrainRatios[CONSTANTS.TILE_CODES.WATER] = 10;
+  terrainRatios[CONSTANTS.TILE_CODES.SAND] = 10;
+  terrainRatios[CONSTANTS.TILE_CODES.GRASS] = 10;
+  return engine.terrain.generateTerrainLayer({ dimensions, terrainRatios });
+}
+
 function helperGenerateMap(width, height, contentFn) {
   const map = {};
   lodash.times(height, (y) => {
@@ -87,12 +76,6 @@ function helperGenerateMap(width, height, contentFn) {
   return map;
 }
 
-export function helperGenerateTerrain(width, height) {
-  return helperGenerateMap(width, height, () => (
-    lodash.random(CONSTANTS.TILE_CODES.GROUND, CONSTANTS.TILE_CODES.SAND)
-  ));
-}
-
 export function helperGenerateUnits(width, height, allPlayers) {
   return helperGenerateMap(width, height, (x, y) => {
     if (x > 1 && x < 8) { return null; }
@@ -100,7 +83,7 @@ export function helperGenerateUnits(width, height, allPlayers) {
 
     const ownerId = (x <= 3 ? allPlayers[0].playerId : allPlayers[1].playerId);
     const unitType = lodash.random(CONSTANTS.UNIT_CODES.PAWN, CONSTANTS.UNIT_CODES.BISHOP);
-    return createUnit(ownerId, unitType);
+    return engine.unit.createUnit(ownerId, unitType);
   });
 }
 
@@ -109,72 +92,4 @@ export function createGame(world, players) {
     world,
     players,
   };
-}
-
-function north(coordinate, distance = 1) {
-  return { x: coordinate.x, y: coordinate.y - distance };
-}
-function east(coordinate, distance = 1) {
-  return { x: coordinate.x + distance, y: coordinate.y };
-}
-function south(coordinate, distance = 1) {
-  return { x: coordinate.x, y: coordinate.y + distance };
-}
-function west(coordinate, distance = 1) {
-  return { x: coordinate.x - distance, y: coordinate.y };
-}
-
-export function generateRangeAreaForUnit(world, unit, origin, distance) {
-  if (distance <= 0) { return []; }
-
-  const key = coord(origin.x, origin.y);
-  if (!world.terrain[key]) {
-    return [];
-  }
-
-  const result = {};
-  result[key] = {};
-  const maybeUnit = world.units[key];
-  let penalty = 1;
-  if (maybeUnit) {
-    // cannot move into this square
-    penalty = 2;
-    result[key] = {
-      movement: false,
-    };
-
-    const isEnemyUnit = (maybeUnit.ownerId !== unit.ownerId);
-    if (isEnemyUnit) {
-      result[key] = {
-        combat: true,
-        movement: false,
-      };
-      return [result];
-    }
-  }
-
-  const n = generateRangeAreaForUnit(world, unit, north(origin), distance - penalty);
-  const e = generateRangeAreaForUnit(world, unit, east(origin), distance - penalty);
-  const s = generateRangeAreaForUnit(world, unit, south(origin), distance - penalty);
-  const w = generateRangeAreaForUnit(world, unit, west(origin), distance - penalty);
-
-  return lodash.concat([], n, e, s, w);
-  // const rangeInfo = this.rangeInfo(x, y);
-  // if (rangeInfo && rangeInfo !== this.CONST.RANGE_CODES.EMPTY) {
-  //   return;
-  // }
-  // let rangeCode = this.CONST.RANGE_CODES.EMPTY;
-  // if (this.hasNoMovementObstacle(x, y)) {
-  //   rangeCode = this.CONST.RANGE_CODES.MOVEMENT;
-  // }
-  // if (this.hasEnemyUnit(x, y)) {
-  //   rangeCode = this.CONST.RANGE_CODES.COMBAT;
-  // }
-  // const coordinate = this.coord(x, y);
-  // this.$set(this.range, coordinate, rangeCode);
-  // const penalty = this.getMovementPenalty(x, y);
-  // this.generateMovement(x + 1, y, distance - penalty);
-  // this.generateMovement(x, y + 1, distance - penalty);
-  // this.generateMovement(x - 1, y, distance - penalty);
-  // this.generateMovement(x, y - 1, distance - penalty);
 }

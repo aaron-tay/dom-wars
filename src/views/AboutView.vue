@@ -58,6 +58,10 @@ export default {
       changelog: `
 # Changelog
 
+### v0.0.4
+World tileset can be adjusted and included 'kenney' tileset
+Units can only move or engage in combat once per turn.
+Refactored underlying architecture relating to units from coordinate-based to id-based
 ### v0.0.3
 Added world generation through parameterisation. Densitiy of specific terrains can be adjusted
 ### v0.0.2

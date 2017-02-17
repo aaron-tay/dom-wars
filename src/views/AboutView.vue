@@ -17,6 +17,15 @@
               <a href="https://github.com/aaron-tay/dom-wars" target="_blank">GitHub for hosting</a>.
             </p>
             <p>
+              Some assets retrieve via the internet. Best effort to attribute and use open assets. Please contact otherwise.
+              <ul>
+                <li>
+                  <a href="https://www.kenney.nl" target="_blank">Kenney Medieval RPG Tileset</a>
+                  - Beautiful game assets with vectors and spritesheets
+                </li>
+              </ul>
+            </p>
+            <p>
               My decision to avoid using <code>&lt;canvas&gt;</code> or existing game engines is purely
               for my own understanding and to see what can be done using minimal technologies.
             </p>

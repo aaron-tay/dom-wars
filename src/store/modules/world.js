@@ -12,13 +12,16 @@ const localState = {
   */
   layers: {
     terrain: {},
-    units: {},
+    units: {},    // <coordinate>: <unitId>
     pathing: {},
   },
   definition: {
     width: 10,
     height: 8,
     tileset: '0',
+  },
+  indexed: {
+    units: {},
   },
 };
 
@@ -31,8 +34,11 @@ const getters = {
     }
     const key = core.coordinate(x, y);
     const terrain = state.layers.terrain[key] || null;
-    const unit = state.layers.units[key] || null;
-    if (unit) {
+    const unitId = state.layers.units[key] || null;
+    let unit = null;
+    if (unitId) {
+      unit = state.indexed.units[unitId];
+      // NOTE(ajt): This modifies the original
       unit.owner = allGetters.getPlayerById(unit.ownerId);
     }
     return {
@@ -84,8 +90,11 @@ const mutations = {
     Vue.delete(state.layers, 'units');
     Vue.delete(state.layers, 'pathing');
     Vue.set(state.layers, 'terrain', terrain);
-    Vue.set(state.layers, 'units', units);
+    Vue.set(state.layers, 'units', lodash.mapValues(units, 'unitId'));
     Vue.set(state.layers, 'pathing', {});
+
+    Vue.delete(state.indexed, 'units');
+    Vue.set(state.indexed, 'units', lodash.mapKeys(units, 'unitId'));
   },
   [WORLD_LAYER_PATHING_SET](state, { pathingLayer }) {
     Vue.delete(state.layers, 'pathing');
@@ -97,17 +106,15 @@ const mutations = {
   },
   [MUTATIONS.TILE_PLACE_UNIT](state, { x, y, unit }) {
     const key = core.coordinate(x, y);
-    Vue.set(state.layers.units, key, unit);
+    Vue.set(state.layers.units, key, unit.unitId);
   },
-  [MUTATIONS.UNIT_REDUCE_HP](state, { x, y, amount }) {
-    const key = core.coordinate(x, y);
-    const unit = state.layers.units[key];
-    unit.hp -= amount;
+  [MUTATIONS.UNIT_REDUCE_HP](state, { unit, amount }) {
+    const unitToUpdate = state.indexed.units[unit.unitId];
+    unitToUpdate.hp -= amount;
   },
-  [MUTATIONS.UNIT_SET_ENERGY](state, { x, y, energy }) {
-    const key = core.coordinate(x, y);
-    const unit = state.layers.units[key];
-    unit.energy = energy;
+  [MUTATIONS.UNIT_SET_ENERGY](state, { unit, energy }) {
+    const unitToUpdate = state.indexed.units[unit.unitId];
+    unitToUpdate.energy = energy;
   },
 };
 /* eslint-disable no-param-reassign */

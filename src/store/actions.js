@@ -33,8 +33,7 @@ export const playerOrderUnitMove = ({ commit, getters }, { source, destination }
   // deplete the unit of movement energy
   // its destination cos the unit has moved :P
   commit(MUTATIONS.UNIT_SET_ENERGY, {
-    x: destination.x,
-    y: destination.y,
+    unit,
     energy: {
       movement: false,
       action: unit.energy.action,
@@ -57,8 +56,6 @@ export const playerOrderUnitAttack = ({ commit }, { source, destination }) => {
 
   // TODO(ajt): Since its a 'unit' operation, it'll be better if (x,y) info isn't required
   commit(MUTATIONS.UNIT_REDUCE_HP, {
-    x: destination.x,
-    y: destination.y,
     unit: defender,
     amount: damage,
   });
@@ -72,8 +69,7 @@ export const playerOrderUnitAttack = ({ commit }, { source, destination }) => {
 
   // deplete the attacker of energy
   commit(MUTATIONS.UNIT_SET_ENERGY, {
-    x: source.x,
-    y: source.y,
+    unit: attacker,
     energy: {
       movement: false,
       action: false,

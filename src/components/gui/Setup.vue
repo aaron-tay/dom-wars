@@ -26,6 +26,15 @@
         Generate world
       </h5>
       <!-- TODO(ajt): Make this UI look nicer cos there's huge potential :) -->
+      <h6>Tileset</h6>
+      <div v-for="tilesetName in ['standard', 'kenney']" v-mdl>
+        <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" :for="'tileset-'+tilesetName">
+          <input type="radio" :id="'tileset-'+tilesetName" class="mdl-radio__button" name="tileset" :value="tilesetName" v-model="tileset">
+          <span class="mdl-radio__label">{{tilesetName}}</span>
+        </label>
+      </div>
+      <br />
+      <h6>Terrain frequency</h6>
       <div v-for="index in 4" v-mdl>
         <label class="mdl-slider__label" :for="'terrain-'+terrainName(index)">
           {{ terrainName(index) }}
@@ -87,6 +96,7 @@ export default {
         3: 50,
         4: 50,
       },
+      tileset: 'standard',
     };
   },
   computed: {
@@ -105,6 +115,7 @@ export default {
       'setPlayerTurnOrder',
       'addPlayer',
       'setWorld',
+      'setTileset',
     ]),
     terrainName(terrainCode) {
       return engine.terrain.nameFromCode(terrainCode);
@@ -141,6 +152,9 @@ export default {
         terrain,
         units,
       });
+      this.setTileset({
+        tileset: this.tileset,
+      });
     },
     confirmWorld() {
       this.setGamePhase(CONSTANTS.GAME_PHASE.PLAYER_TURN);
@@ -159,6 +173,13 @@ export default {
       deep: true,
       handler() {
         this.generateWorld();
+      },
+    },
+    tileset: {
+      handler() {
+        this.setTileset({
+          tileset: this.tileset,
+        });
       },
     },
   },

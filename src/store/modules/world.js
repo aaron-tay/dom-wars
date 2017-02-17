@@ -18,7 +18,7 @@ const localState = {
   definition: {
     width: 10,
     height: 8,
-    tileset: '0',
+    tileset: 'standard',
   },
   indexed: {
     units: {},
@@ -46,6 +46,7 @@ const getters = {
       y,
       terrain,
       unit,
+      tileset: state.definition.tileset,
     };
   },
   getSelectedTile: (state, allGetters) => {
@@ -73,6 +74,7 @@ const getters = {
   },
 };
 
+const WORLD_TILESET_SET = 'WORLD:TILESET:SET';
 const WORLD_LAYERS_SET = 'WORLD:LAYERS:SET';
 const WORLD_LAYER_PATHING_SET = 'WORLD:LAYER:PATHING:SET';
 
@@ -86,10 +88,16 @@ const actions = {
   setPathingLayer({ commit }, pathingLayer = {}) {
     commit(WORLD_LAYER_PATHING_SET, { pathingLayer });
   },
+  setTileset({ commit }, { tileset }) {
+    commit(WORLD_TILESET_SET, { tileset });
+  },
 };
 
 /* eslint-disable no-param-reassign */
 const mutations = {
+  [WORLD_TILESET_SET](state, { tileset = '0' }) {
+    state.definition.tileset = tileset;
+  },
   [WORLD_LAYERS_SET](state, { terrain, units }) {
     console.log('store:world', terrain, units);
     Vue.delete(state.layers, 'terrain');

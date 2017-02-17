@@ -1,7 +1,7 @@
 <template>
   <!-- TODO(ajt): optimise to only render what is necessary -->
   <!-- NOTE(ajt): layers within tiles causes overlapping which isn't nice... -->
-  <div class="tile" :class="{ 'tile--selected': tile.isSelected }">
+  <div class="tile" :class="tileClass">
     <div class="tile-layer" :class="terrainLayerClass">
       <span class="debug">
         {{tile.x}},{{tile.y}}
@@ -18,7 +18,9 @@
     <transition name="fade">
       <div class="tile-layer" v-if="tile.unit">
         <div class="content-unit" :class="unitLayerClass">
-          {{ unitLayer.hp }}
+          <span class="unit__hp">
+            {{ unitLayer.hp }}
+          </span>
         </div>
       </div>
     </transition>
@@ -40,6 +42,7 @@ export default {
           unit: {},
           pathing: {},
           isSelected: false,
+          tileset: 0,
         };
       },
     },
@@ -59,6 +62,12 @@ export default {
     },
     pathingLayer() {
       return this.tile.pathing;
+    },
+    tileClass() {
+      return {
+        'tile--selected': this.isSelected,
+        'tileset-kenney': this.tile.tileset === 'kenney',
+      };
     },
     terrainLayerClass() {
       return {
@@ -105,10 +114,12 @@ $color-pathing-movement: $color-info;
 $color-pathing-combat: $color-danger;
 
 // Roughly 64px at desktop size
-$tile-size-px: 8vmin;
+// $tile-size-px: 8vmin;
+$tile-size-px: 64px;
 
 .debug {
   color: transparentize(#333, 0.7);
+  display: none;
 }
 
 .tile {
@@ -119,9 +130,16 @@ $tile-size-px: 8vmin;
   display: table-cell;
   // NOTE(ajt): not sure why I need 'table-cell'... inline-block should work...
   z-index: $resting-z-index;
+
+  //http://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.tile:hover {
+.enabled .tile:hover {
   border: 1px solid $color-selected;
   z-index: $selected-z-index;
 }
@@ -183,6 +201,21 @@ $tile-size-px: 8vmin;
 .content-unit--bishop {
   background-color: $pastel-magenta;
 }
+.unit__hp {
+  border-radius: 999px;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: -10px;
+  left: -10px;
+}
+
+.unit-owner--player-one .unit__hp {
+  background-color: $player-one-color;
+}
+.unit-owner--player-two .unit__hp {
+  background-color: $player-two-color;
+}
 
 .unit-owner--player-one {
   border: 2px solid $player-one-color;
@@ -217,5 +250,71 @@ $tile-size-px: 8vmin;
 }
 .fade-enter, .fade-leave-to {
   opacity: 0
+}
+
+// NOTE(ajt): Here's some documentation for next time on sass mixins & functions
+// http://thesassway.com/advanced/pure-sass-functions
+
+$kenney-tile-size: 64px;
+$kenney-tile-padding: 32px;
+@function kenney-pos($input, $offset:0) {
+  @return -(($kenney-tile-size * $input) + ($kenney-tile-padding * ($input + 1)) + $offset);
+}
+@mixin kenney-tile($x, $y, $xOffset:0, $yOffset:0) {
+  background-image: url('~assets/tileset-kenney-medieval.svg');
+  background-repeat: no-repeat;
+  background-position: kenney-pos($x, $xOffset) kenney-pos($y, $yOffset);
+}
+
+.tileset-kenney .tile-layer {
+  transition: background-position $fade-duration-ms/2.0 ease-in-out;
+  -moz-transition: background-position $fade-duration-ms/2.0 ease-in-out;
+  -webkit-transition: background-position $fade-duration-ms/2.0 ease-in-out;
+}
+
+.tileset-kenney .terrain--grass {
+  opacity: 1;
+  @include kenney-tile(0, 0);
+}
+
+.tileset-kenney .terrain--ground {
+  opacity: 1;
+  @include kenney-tile(1, 1);
+}
+
+.tileset-kenney .terrain--water {
+  opacity: 1;
+  @include kenney-tile(1, 2);
+}
+
+.tileset-kenney .terrain--sand {
+  opacity: 1;
+  @include kenney-tile(2, 0);
+}
+
+.tileset-kenney .content-unit--pawn.unit-owner--player-one {
+  opacity: 1;
+  @include kenney-tile(12, 4, 16px, 16px);
+}
+.tileset-kenney .content-unit--knight.unit-owner--player-one {
+  opacity: 1;
+  @include kenney-tile(14, 4, 16px, 16px);
+}
+.tileset-kenney .content-unit--bishop.unit-owner--player-one {
+  opacity: 1;
+  @include kenney-tile(13, 4, 16px, 16px);
+}
+
+.tileset-kenney .content-unit--pawn.unit-owner--player-two {
+  opacity: 1;
+  @include kenney-tile(12, 6, 16px, 16px);
+}
+.tileset-kenney .content-unit--knight.unit-owner--player-two {
+  opacity: 1;
+  @include kenney-tile(14, 6, 16px, 16px);
+}
+.tileset-kenney .content-unit--bishop.unit-owner--player-two {
+  opacity: 1;
+  @include kenney-tile(13, 6, 16px, 16px);
 }
 </style>

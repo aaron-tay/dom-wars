@@ -1,7 +1,7 @@
 <template>
   <!-- MDL isn't really required but let's enable it anyway -->
   <div v-mdl>
-    <div class="page-content mdl-grid">
+    <div class="page-content mdl-grid" :class="{ 'enabled': isGameReady }">
       <div class="mdl-cell mdl-cell--8-col">
         <template v-for="(_, yKey) in getWorldDefinition.height">
           <div class="horizontal">
@@ -49,6 +49,9 @@ export default {
     selectedTile() {
       return this.getSelectedTile;
     },
+    isGameReady() {
+      return (this.currentGamePhase === CONSTANTS.GAME_PHASE.PLAYER_TURN);
+    },
   },
   methods: {
     ...mapActions([
@@ -64,7 +67,7 @@ export default {
       return tile;
     },
     onTileClicked(x, y) {
-      if (this.currentGamePhase !== CONSTANTS.GAME_PHASE.PLAYER_TURN) {
+      if (!this.isGameReady) {
         this.playerUnselectTile();
         return;
       }

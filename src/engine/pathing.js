@@ -28,7 +28,7 @@ function canMoveIntoTile(tile) {
   return !hasMovementObstacle;
 }
 
-function generatePathingArea(x, y, distance, world, iVisitedPaths = {}) {
+function generatePathingArea(x, y, distance, world, iVisitedPaths = {}, parentCoordinate = null) {
   const visitedPaths = iVisitedPaths;
   if (distance < 0) { return visitedPaths; }
 
@@ -52,13 +52,15 @@ function generatePathingArea(x, y, distance, world, iVisitedPaths = {}) {
     movement,
     combat,
     distance,
+    parent: parentCoordinate,
   };
 
+  const destinationCoordinate = { x, y };
   const penalty = tileMovementPenalty(destinationTile, currentUnit);
-  generatePathingArea(x + 1, y, distance - penalty, world, visitedPaths);
-  generatePathingArea(x, y + 1, distance - penalty, world, visitedPaths);
-  generatePathingArea(x - 1, y, distance - penalty, world, visitedPaths);
-  generatePathingArea(x, y - 1, distance - penalty, world, visitedPaths);
+  generatePathingArea(x + 1, y, distance - penalty, world, visitedPaths, destinationCoordinate);
+  generatePathingArea(x, y + 1, distance - penalty, world, visitedPaths, destinationCoordinate);
+  generatePathingArea(x - 1, y, distance - penalty, world, visitedPaths, destinationCoordinate);
+  generatePathingArea(x, y - 1, distance - penalty, world, visitedPaths, destinationCoordinate);
   return visitedPaths;
 }
 

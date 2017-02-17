@@ -104,7 +104,8 @@ $color-selected: $color-info;
 $color-pathing-movement: $color-info;
 $color-pathing-combat: $color-danger;
 
-$tile-size-px: 64px;
+// Roughly 64px at desktop size
+$tile-size-px: 8vmin;
 
 .debug {
   color: transparentize(#333, 0.7);

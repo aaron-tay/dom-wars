@@ -79,7 +79,7 @@ const actions = {
 /* eslint-disable no-param-reassign */
 const mutations = {
   [WORLD_LAYERS_SET](state, { terrain, units }) {
-    console.log(terrain, units);
+    console.log('store:world', terrain, units);
     Vue.delete(state.layers, 'terrain');
     Vue.delete(state.layers, 'units');
     Vue.delete(state.layers, 'pathing');

@@ -5,12 +5,20 @@ function pathKey(x, y) {
   return core.coordinate(x, y);
 }
 
+function hasEnergyForMovement(unit) {
+  return unit.energy.movement;
+}
+
+function hasEnergyForCombat(unit) {
+  return unit.energy.action;
+}
+
 function hasOpponentUnitInTile(tile, currentUnit) {
   // definition of 'opponent' is based on the selectedUnit
   // console.log(tile.unit, this.selectedUnit);
   if (!tile.unit) { return false; }
   if (!currentUnit) { return false; }
-  if (tile.unit.ownerId === currentUnit.ownerId) { return false; }
+  if (tile.unit.playerId === currentUnit.playerId) { return false; }
   if (tile.unit === currentUnit) { return false; }
   return true;
 }
@@ -23,9 +31,16 @@ function tileMovementPenalty(tile, currentUnit) {
   return 1;
 }
 
-function canMoveIntoTile(tile) {
+function canMoveIntoTile(tile, currentUnit) {
   const hasMovementObstacle = !!tile.unit;
-  return !hasMovementObstacle;
+  const hasMovementEnergy = hasEnergyForMovement(currentUnit);
+  return !hasMovementObstacle && hasMovementEnergy;
+}
+
+function canEngageCombatInTile(tile, currentUnit) {
+  const hasOpponent = hasOpponentUnitInTile(tile, currentUnit);
+  const hasCombatEnergy = hasEnergyForCombat(currentUnit);
+  return hasOpponent && hasCombatEnergy;
 }
 
 function generatePathingArea(x, y, distance, world, iVisitedPaths = {}, parentCoordinate = null) {
@@ -44,8 +59,8 @@ function generatePathingArea(x, y, distance, world, iVisitedPaths = {}, parentCo
   }
 
   const currentUnit = world.currentUnit;
-  const movement = canMoveIntoTile(destinationTile);
-  const combat = hasOpponentUnitInTile(destinationTile, currentUnit);
+  const movement = canMoveIntoTile(destinationTile, currentUnit);
+  const combat = canEngageCombatInTile(destinationTile, currentUnit);
   // an enemy in any tile considered is combat-engageable
 
   visitedPaths[key] = {

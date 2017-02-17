@@ -33,11 +33,11 @@
         <input class="mdl-slider mdl-js-slider" :id="'terrain-'+terrainName(index)" type="range" min="0" max="100" v-model="terrainRatios[index]">
       </div>
       <br />
-      <button class="mdl-button mdl-js-button mdl-button--raised" @click="generateWorld">
-        regenerate
-      </button>
       <button class="mdl-button mdl-js-button mdl-button--raised" @click="confirmWorld">
         next
+      </button>
+      <button class="mdl-button mdl-js-button mdl-button--raised" @click="generateWorld">
+        regenerate
       </button>
     </div>
     <!-- <div v-if="currentGamePhase === CONSTANTS.GAME_PHASE.SETUP_UNITS">

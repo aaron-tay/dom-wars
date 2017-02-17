@@ -39,7 +39,7 @@ const getters = {
     if (unitId) {
       unit = state.indexed.units[unitId];
       // NOTE(ajt): This modifies the original
-      unit.owner = allGetters.getPlayerById(unit.ownerId);
+      unit.owner = allGetters.getPlayerById(unit.playerId);
     }
     return {
       x,
@@ -64,6 +64,12 @@ const getters = {
     return {
       pathing,
     };
+  },
+  getUnitsOwnedByPlayerId: state => (playerId) => {
+    const result = lodash.filter(state.indexed.units, item => (
+      item.playerId === playerId
+    ));
+    return result;
   },
 };
 

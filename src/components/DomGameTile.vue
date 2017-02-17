@@ -74,8 +74,8 @@ export default {
         'content-unit--pawn': this.unitLayer.type === 1,
         'content-unit--knight': this.unitLayer.type === 2,
         'content-unit--bishop': this.unitLayer.type === 3,
-        'unit-owner--player-one': this.getPlayerById(this.unitLayer.ownerId).localId === 1,
-        'unit-owner--player-two': this.getPlayerById(this.unitLayer.ownerId).localId === 2,
+        'unit-owner--player-one': this.getPlayerById(this.unitLayer.playerId).localId === 1,
+        'unit-owner--player-two': this.getPlayerById(this.unitLayer.playerId).localId === 2,
       };
     },
     pathingLayerClass() {

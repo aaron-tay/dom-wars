@@ -1,10 +1,10 @@
 import lodash from 'lodash';
-import CONSTANTS from './../components/constants';
 import layer from './layer';
+import CONSTANTS from './../components/constants';
 
-function createUnit(ownerId, type) {
+function createUnit(playerId, type) {
   return {
-    ownerId,
+    playerId,
     type,
     unitId: lodash.uniqueId('unit-'),
     hp: (type) * 3,
@@ -25,9 +25,9 @@ function generateUnitLayerForBootstrap({ dimensions, allPlayers }) {
     if (x > 1 && x < 8) { return null; }
     if ((y + x) % 2 === 0) { return null; }
 
-    const ownerId = (x <= 3 ? allPlayers[0].playerId : allPlayers[1].playerId);
+    const playerId = (x <= 3 ? allPlayers[0].playerId : allPlayers[1].playerId);
     const unitType = (y % 3) + 1;
-    return createUnit(ownerId, unitType);
+    return createUnit(playerId, unitType);
   });
 
   return unitLayer;

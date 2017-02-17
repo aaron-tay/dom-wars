@@ -1,3 +1,4 @@
+import lodash from 'lodash';
 import * as MUTATIONS from './mutation-types';
 
 // Actions players can take. We have rough prefixing for now
@@ -85,12 +86,25 @@ export const playerRelinquishGame = ({ commit }, { playerId }) => {
 };
 
 // When the current player wants to end their turn
-export const playerRelinquishTurn = ({ commit }) => {
+export const playerRelinquishTurn = ({ commit, getters }) => {
+  const currentPlayer = getters.currentPlayer;
   commit(MUTATIONS.CURRENT_PLAYER_TURN_END);
-  // TODO(ajt): post-turn clean-up like restoring unit energy
+
+  // TODO(ajt): Maybe have a specialised mutation to achieve this 'atomically'
+  const units = getters.getUnitsOwnedByPlayerId(currentPlayer.playerId);
+  lodash.forEach(units, (unit) => {
+    commit(MUTATIONS.UNIT_SET_ENERGY, {
+      unit,
+      energy: {
+        movement: true,
+        action: true,
+      },
+    });
+  });
 };
 
 // Signal when the specified player is ready to commence the game
 export const playerReadyToCommenceGame = ({ commit }, { playerId }) => {
   console.log(commit, playerId);
+  // if all players are ready then transition to the 'playing-game' state
 };

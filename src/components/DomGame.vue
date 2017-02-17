@@ -80,7 +80,7 @@ export default {
         const destination = this.tile(x, y);
         const hasUnitInDestination = !!destination.unit;
         if (hasUnitInSource) {
-          const currentPlayerOwnsSourceUnit = this.currentPlayer.playerId === source.unit.ownerId;
+          const currentPlayerOwnsSourceUnit = this.currentPlayer.playerId === source.unit.playerId;
           if (!currentPlayerOwnsSourceUnit) {
             this.playerUnselectTile();
           } else if (!hasUnitInDestination) {

@@ -101,6 +101,8 @@ export const playerRelinquishTurn = ({ commit, getters }) => {
       },
     });
   });
+
+  commit(MUTATIONS.TILE_UNSELECT);
 };
 
 // Signal when the specified player is ready to commence the game

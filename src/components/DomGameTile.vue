@@ -264,6 +264,7 @@ $kenney-tile-padding: 32px;
   background-image: url('~assets/tileset-kenney-medieval.svg');
   background-repeat: no-repeat;
   background-position: kenney-pos($x, $xOffset) kenney-pos($y, $yOffset);
+  opacity: 1;
 }
 
 .tileset-kenney .tile-layer {
@@ -273,48 +274,38 @@ $kenney-tile-padding: 32px;
 }
 
 .tileset-kenney .terrain--grass {
-  opacity: 1;
   @include kenney-tile(0, 0);
 }
 
 .tileset-kenney .terrain--ground {
-  opacity: 1;
   @include kenney-tile(1, 1);
 }
 
 .tileset-kenney .terrain--water {
-  opacity: 1;
   @include kenney-tile(1, 2);
 }
 
 .tileset-kenney .terrain--sand {
-  opacity: 1;
   @include kenney-tile(2, 0);
 }
 
 .tileset-kenney .content-unit--pawn.unit-owner--player-one {
-  opacity: 1;
   @include kenney-tile(12, 4, 16px, 16px);
 }
 .tileset-kenney .content-unit--knight.unit-owner--player-one {
-  opacity: 1;
   @include kenney-tile(14, 4, 16px, 16px);
 }
 .tileset-kenney .content-unit--bishop.unit-owner--player-one {
-  opacity: 1;
   @include kenney-tile(13, 4, 16px, 16px);
 }
 
 .tileset-kenney .content-unit--pawn.unit-owner--player-two {
-  opacity: 1;
   @include kenney-tile(12, 6, 16px, 16px);
 }
 .tileset-kenney .content-unit--knight.unit-owner--player-two {
-  opacity: 1;
   @include kenney-tile(14, 6, 16px, 16px);
 }
 .tileset-kenney .content-unit--bishop.unit-owner--player-two {
-  opacity: 1;
   @include kenney-tile(13, 6, 16px, 16px);
 }
 </style>

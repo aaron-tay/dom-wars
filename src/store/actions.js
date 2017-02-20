@@ -81,8 +81,23 @@ export const playerOrderUnitAttack = ({ commit }, { source, destination }) => {
 };
 
 // When player wants to surrender
-export const playerRelinquishGame = ({ commit }, { playerId }) => {
+export const playerRelinquishGame = ({ commit, getters }, { playerId }) => {
   commit(MUTATIONS.PLAYER_GAME_END, { playerId });
+
+  // TODO(ajt): Remove all units (particularly for multi-player game)
+  // NOTE(ajt): slightly duplicated logic with playerRelinquishTurn
+  const units = getters.getUnitsOwnedByPlayerId(playerId);
+  lodash.forEach(units, (unit) => {
+    commit(MUTATIONS.UNIT_SET_ENERGY, {
+      unit,
+      energy: {
+        movement: false,
+        action: false,
+      },
+    });
+  });
+
+  commit(MUTATIONS.TILE_UNSELECT);
 };
 
 // When the current player wants to end their turn
@@ -91,6 +106,7 @@ export const playerRelinquishTurn = ({ commit, getters }) => {
   commit(MUTATIONS.CURRENT_PLAYER_TURN_END);
 
   // TODO(ajt): Maybe have a specialised mutation to achieve this 'atomically'
+  // NOTE(ajt): slightly duplicated logic with playerRelinquishGame
   const units = getters.getUnitsOwnedByPlayerId(currentPlayer.playerId);
   lodash.forEach(units, (unit) => {
     commit(MUTATIONS.UNIT_SET_ENERGY, {

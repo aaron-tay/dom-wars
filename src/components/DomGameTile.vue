@@ -85,6 +85,8 @@ export default {
         'content-unit--bishop': this.unitLayer.type === 3,
         'unit-owner--player-one': this.getPlayerById(this.unitLayer.playerId).localId === 1,
         'unit-owner--player-two': this.getPlayerById(this.unitLayer.playerId).localId === 2,
+        'unit-energy--no-movement': !this.unitLayer.energy.movement,
+        'unit-energy--no-action': !this.unitLayer.energy.action,
       };
     },
     pathingLayerClass() {
@@ -220,6 +222,15 @@ $tile-size-px: 64px;
 .unit-owner--player-two {
   border: 2px solid $player-two-color;
   border-radius: 4px;
+}
+
+.unit-energy--no-movement {
+  opacity: 0.6;
+}
+
+.unit-energy--no-action,
+.unit-energy--no-movement.unit-energy--no-action {
+  opacity: 0.25;
 }
 
 .info-pathing {

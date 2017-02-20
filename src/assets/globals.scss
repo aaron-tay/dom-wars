@@ -72,3 +72,10 @@ $player-two-color: $pastel-gray;
 .player-color--two {
   color: $player-two-color;
 }
+
+// usage: @import transition(...)
+@mixin transition($property, $time, $method) {
+  transition: $property $time $method;
+  -moz-transition: $property $time $method;
+  -webkit-transition: $property $time $method;
+}

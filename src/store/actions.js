@@ -87,10 +87,8 @@ export const playerOrderUnitAttack = ({ commit, dispatch, getters }, { source, d
   // TODO(ajt): post-combat actions
   // Check if attacking player has won
   // Check if defending player has won
-  console.log('attk');
   const attackingPlayerUnits = remainingUnits(getters.getUnitsOwnedByPlayerId(attackingPlayerId));
   const defendingPlayerUnits = remainingUnits(getters.getUnitsOwnedByPlayerId(defendingPlayerId));
-  console.log('attk', attackingPlayerUnits, defendingPlayerUnits);
   if (defendingPlayerUnits.length === 0) {
     // attacking might be winner
     dispatch('playerRelinquishGame', { playerId: defendingPlayerId });

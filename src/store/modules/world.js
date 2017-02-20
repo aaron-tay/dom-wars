@@ -99,7 +99,6 @@ const mutations = {
     state.definition.tileset = tileset;
   },
   [WORLD_LAYERS_SET](state, { terrain, units }) {
-    console.log('store:world', terrain, units);
     Vue.delete(state.layers, 'terrain');
     Vue.delete(state.layers, 'units');
     Vue.delete(state.layers, 'pathing');

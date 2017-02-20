@@ -8,3 +8,5 @@ export const UNIT_SET_ENERGY = 'UNIT_ENERGY_SET';
 
 export const CURRENT_PLAYER_TURN_END = 'CURRENT_PLAYER_TURN_END';
 export const PLAYER_GAME_END = 'PLAYER_GAME_END';
+
+export const GAME_OVER = 'GAME_OVER';

@@ -44,12 +44,19 @@ export const playerOrderUnitMove = ({ commit, getters }, { source, destination }
   // TODO(ajt): post-movement actions
 };
 
+function remainingUnits(units) {
+  const result = lodash.filter(units, (unit => (unit.hp > 0)));
+  return result;
+}
+
 // When the player orders a unit to attack a location
-export const playerOrderUnitAttack = ({ commit }, { source, destination }) => {
+export const playerOrderUnitAttack = ({ commit, dispatch, getters }, { source, destination }) => {
   const attacker = source.unit;
   const defender = destination.unit;
   if (!attacker) { throw new Error(`Expected unit in source: ${source}`); }
   if (!defender) { throw new Error(`Expected unit in destination: ${destination}`); }
+  const attackingPlayerId = attacker.playerId;
+  const defendingPlayerId = defender.playerId;
 
   // TODO(ajt): pre-combat actions
 
@@ -78,6 +85,20 @@ export const playerOrderUnitAttack = ({ commit }, { source, destination }) => {
   });
 
   // TODO(ajt): post-combat actions
+  // Check if attacking player has won
+  // Check if defending player has won
+  console.log('attk');
+  const attackingPlayerUnits = remainingUnits(getters.getUnitsOwnedByPlayerId(attackingPlayerId));
+  const defendingPlayerUnits = remainingUnits(getters.getUnitsOwnedByPlayerId(defendingPlayerId));
+  console.log('attk', attackingPlayerUnits, defendingPlayerUnits);
+  if (defendingPlayerUnits.length === 0) {
+    // attacking might be winner
+    dispatch('playerRelinquishGame', { playerId: defendingPlayerId });
+  }
+  if (attackingPlayerUnits.length === 0) {
+    // defending might be winner
+    dispatch('playerRelinquishGame', { playerId: attackingPlayerId });
+  }
 };
 
 // When player wants to surrender
@@ -98,6 +119,11 @@ export const playerRelinquishGame = ({ commit, getters }, { playerId }) => {
   });
 
   commit(MUTATIONS.TILE_UNSELECT);
+
+  // TODO(ajt): This is just temporary
+  if (getters.hasWinner) {
+    commit(MUTATIONS.GAME_OVER);
+  }
 };
 
 // When the current player wants to end their turn

@@ -31,7 +31,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import CONSTANTS from './../constants';
 import DomGameTileInfo from './../DomGameTileInfo';
 
 export default {
@@ -69,8 +68,6 @@ export default {
       this.playerRelinquishGame({
         playerId: this.currentPlayer.playerId,
       });
-      // TODO(ajt): This is just temporary
-      this.setGamePhase(CONSTANTS.GAME_PHASE.GAME_OVER);
     },
   },
 };

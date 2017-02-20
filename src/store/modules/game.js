@@ -1,6 +1,7 @@
 // import Vue from 'vue';
 import lodash from 'lodash';
 import * as MUTATIONS from './../mutation-types';
+import CONSTANTS from './../../components/constants';
 
 const localState = {
   phase: null,                  // CONSTANTS.GAME_PHASE
@@ -25,7 +26,7 @@ const getters = {
   },
   hasWinner: (state) => {
     const remainingPlayerIds = state.playerTurnOrder;
-    return remainingPlayerIds.length === 0;
+    return remainingPlayerIds.length <= 1;
   },
   hasSelection: (state) => {
     if (state.selection.x === null || state.selection.y === null) {
@@ -59,6 +60,9 @@ const mutations = {
   [GAME_PLAYER_TURN_SET_ORDER](state, playerTurnOrder) {
     state.originalPlayerTurnOrder = playerTurnOrder;
     state.playerTurnOrder = lodash.clone(playerTurnOrder);
+  },
+  [MUTATIONS.GAME_OVER](state) {
+    state.phase = CONSTANTS.GAME_PHASE.GAME_OVER;
   },
   [MUTATIONS.CURRENT_PLAYER_TURN_END](state) {
     const currentPlayerId = state.playerTurnOrder.shift();

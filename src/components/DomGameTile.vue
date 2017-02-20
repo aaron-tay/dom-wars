@@ -151,9 +151,7 @@ $tile-size-px: 64px;
   left: 0;
   right: 0;
 
-  transition: background-color $fade-duration-ms ease-in-out;
-  -moz-transition: background-color $fade-duration-ms ease-in-out;
-  -webkit-transition: background-color $fade-duration-ms ease-in-out;
+  @include transition(background-color, $fade-duration-ms, ease-in-out);
 }
 
 .tile--selected {
@@ -187,9 +185,7 @@ $tile-size-px: 64px;
   height: 50%;
   text-align: center;
 
-  transition: background-color $fade-duration-ms/2.0 ease-in-out;
-  -moz-transition: background-color $fade-duration-ms/2.0 ease-in-out;
-  -webkit-transition: background-color $fade-duration-ms/2.0 ease-in-out;
+  @include transition(background-color, $fade-duration-ms/2.0, ease-in-out);
 }
 .content-unit--pawn {
   background-color: $pastel-orange;
@@ -268,9 +264,7 @@ $kenney-tile-padding: 32px;
 }
 
 .tileset-kenney .tile-layer {
-  transition: background-position $fade-duration-ms/2.0 ease-in-out;
-  -moz-transition: background-position $fade-duration-ms/2.0 ease-in-out;
-  -webkit-transition: background-position $fade-duration-ms/2.0 ease-in-out;
+  @include transition(background-position, $fade-duration-ms/2.0, ease-in-out);
 }
 
 .tileset-kenney .terrain--grass {

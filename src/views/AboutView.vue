@@ -58,6 +58,9 @@ export default {
       changelog: `
 # Changelog
 
+### v0.05
+Units have slightly more visual difference when they've moved/attacked.
+Added end-game condition where players are eliminated if they've lost all their units
 ### v0.0.4
 World tileset can be adjusted and included 'kenney' tileset
 Units can only move or engage in combat once per turn.

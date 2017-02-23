@@ -37,7 +37,7 @@ export default {
       const world = {
         currentTile: this.getSelectedTile,
         currentUnit: this.getSelectedTile.unit,
-        getTileFn: this.getTileFn,
+        getTile: this.getTileFn,
         dimensions: this.getWorldDefinition,
       };
 

@@ -76,7 +76,7 @@ function generatePathingArea(
   const maxDistance = Math.max(movementParams.maxDistance, combatParams.maxDistance);
   if (distance > maxDistance) { return visitedPaths; }
 
-  const destinationTile = world.getTileFn(x, y);
+  const destinationTile = world.getTile(x, y);
   if (!destinationTile) { return visitedPaths; }
 
   const key = pathKey(x, y);

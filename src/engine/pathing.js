@@ -31,36 +31,65 @@ function tileMovementPenalty(tile, currentUnit) {
   return 1;
 }
 
-function canMoveIntoTile(tile, currentUnit) {
+function canMoveIntoTile(tile, currentUnit, movementParams, distance) {
   const hasMovementObstacle = !!tile.unit;
   const hasMovementEnergy = hasEnergyForMovement(currentUnit);
-  return !hasMovementObstacle && hasMovementEnergy;
+  if (hasMovementObstacle || !hasMovementEnergy) {
+    return false;
+  }
+
+  if (movementParams) {
+    const distanceTravelled = distance; // (currentUnit.speed - distance);
+    // TODO(ajt): bug here with negative distanceTravelled
+    // console.log(distanceTravelled, currentUnit.speed, distance);
+    const isWithinMaximumDistance = (distanceTravelled <= movementParams.maxDistance);
+    return isWithinMaximumDistance;
+  }
+
+  return true;
 }
 
-function canEngageCombatInTile(tile, currentUnit) {
+function canEngageCombatInTile(tile, currentUnit, combatParams, distance) {
   const hasOpponent = hasOpponentUnitInTile(tile, currentUnit);
   const hasCombatEnergy = hasEnergyForCombat(currentUnit);
-  return hasOpponent && hasCombatEnergy;
+  if (!hasOpponent || !hasCombatEnergy) {
+    return false;
+  }
+
+  if (combatParams) {
+    // NOTE(ajt): this is hacky but tests a proof-of-concept
+    const distanceTravelled = distance; // (currentUnit.speed - distance);
+    const isWithinMinimumDistance = (combatParams.minDistance <= distanceTravelled);
+    const isWithinMaximumDistance = (distanceTravelled <= combatParams.maxDistance);
+    return (isWithinMinimumDistance && isWithinMaximumDistance);
+  }
+
+  return true;
 }
 
-function generatePathingArea(x, y, distance, world, iVisitedPaths = {}, parentCoordinate = null) {
+function generatePathingArea(
+  x, y, world, distance,
+  movementParams, combatParams = {},
+  iVisitedPaths = {}, parentCoordinate = null
+) {
   const visitedPaths = iVisitedPaths;
-  if (distance < 0) { return visitedPaths; }
+  const maxDistance = Math.max(movementParams.maxDistance, combatParams.maxDistance);
+  if (distance > maxDistance) { return visitedPaths; }
 
   const destinationTile = world.getTileFn(x, y);
   if (!destinationTile) { return visitedPaths; }
 
   const key = pathKey(x, y);
   const existingRangeInfo = visitedPaths[key];
-  // console.log('GMA', key, existingRangeInfo, !!existingRangeInfo, destinationTile, paths);
-  // NOTE(ajt): Distance check to ensure we have the greatest area possibly covered
-  if (existingRangeInfo && distance <= existingRangeInfo.distance) {
+  // console.log('GMA', key, existingRangeInfo, !!existingRangeInfo, destinationTile, visitedPaths);
+  // Skip processing if the distance to reach this tile is greater than the best we've found.
+  if (existingRangeInfo && (distance >= existingRangeInfo.distance)) {
     return visitedPaths;
   }
 
   const currentUnit = world.currentUnit;
-  const movement = canMoveIntoTile(destinationTile, currentUnit);
-  const combat = canEngageCombatInTile(destinationTile, currentUnit);
+  const movement = canMoveIntoTile(destinationTile, currentUnit, movementParams, distance);
+  const combat = canEngageCombatInTile(destinationTile, currentUnit, combatParams, distance);
   // an enemy in any tile considered is combat-engageable
 
   visitedPaths[key] = {
@@ -70,12 +99,17 @@ function generatePathingArea(x, y, distance, world, iVisitedPaths = {}, parentCo
     parent: parentCoordinate,
   };
 
-  const destinationCoordinate = { x, y };
+  const coordinate = { x, y };
   const penalty = tileMovementPenalty(destinationTile, currentUnit);
-  generatePathingArea(x + 1, y, distance - penalty, world, visitedPaths, destinationCoordinate);
-  generatePathingArea(x, y + 1, distance - penalty, world, visitedPaths, destinationCoordinate);
-  generatePathingArea(x - 1, y, distance - penalty, world, visitedPaths, destinationCoordinate);
-  generatePathingArea(x, y - 1, distance - penalty, world, visitedPaths, destinationCoordinate);
+  const newDistance = (distance + penalty);
+
+  // NOTE(ajt): linter disable cos its easier to follow
+  /* eslint-disable max-len */
+  generatePathingArea(x + 1, y, world, newDistance, movementParams, combatParams, visitedPaths, coordinate);
+  generatePathingArea(x, y + 1, world, newDistance, movementParams, combatParams, visitedPaths, coordinate);
+  generatePathingArea(x - 1, y, world, newDistance, movementParams, combatParams, visitedPaths, coordinate);
+  generatePathingArea(x, y - 1, world, newDistance, movementParams, combatParams, visitedPaths, coordinate);
+  /* eslint-enable */
   return visitedPaths;
 }
 
@@ -83,8 +117,21 @@ function generatePathingLayerForUnit({ world }) {
   const dimensions = world.dimensions;
   const startX = world.currentTile.x;
   const startY = world.currentTile.y;
-  const distance = world.currentUnit.speed;
-  const pathingArea = generatePathingArea(startX, startY, distance, world);
+  const movementParams = {
+    // concept of minimum distance doesn't make sense
+    maxDistance: world.currentUnit.speed,
+  };
+  const combatParams = {
+    minDistance: world.currentUnit.weapon.minDistance,
+    maxDistance: world.currentUnit.weapon.maxDistance,
+  };
+  // NOTE(ajt): Since we're using the same function to generate the pathing area,
+  // we need to consider enough squares for both movement and combat
+  // const distance = Math.max(movementParams.maxDistance, combatParams.maxDistance);
+
+  /* eslint-disable max-len */
+  const pathingArea = generatePathingArea(startX, startY, world, 0, movementParams, combatParams);
+  /* eslint-enable */
 
   const pathingLayer = layer.createLayer(dimensions, (x, y) => {
     const key = pathKey(x, y);

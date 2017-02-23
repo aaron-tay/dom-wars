@@ -16,6 +16,9 @@
           <p>
             Contains: {{ unitInfo }} (owned by {{ unitOwner }})
           </p>
+          <p>
+            Weapon: {{ weaponInfo }}
+          </p>
         </div>
         <div class="mdl-card__actions mdl-card--border">
           {{ tile }}
@@ -86,6 +89,10 @@ export default {
     unitOwner() {
       if (!this.unitLayer) { return 'n/a'; }
       return this.unitLayer.owner.name;
+    },
+    weaponInfo() {
+      if (!this.unitLayer) { return 'n/a'; }
+      return this.unitLayer.weapon.description;
     },
     pathingInfo() {
       return this.pathing[this.pathingLayer] || 'unknown';

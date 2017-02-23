@@ -2,6 +2,41 @@ import lodash from 'lodash';
 import layer from './layer';
 import CONSTANTS from './../components/constants';
 
+// NOTE(ajt): hand-coded weapons for now
+function makeWeapon(type) {
+  // Pawns can attack up to 2 squares distance (2 straight, 1 diagonal)
+  if (type === CONSTANTS.UNIT_CODES.PAWN) {
+    return {
+      description: 'Flail (all directions)',
+      minDistance: 1,
+      maxDistance: 2,
+    };
+  }
+
+  // Knights are only ranged (diagonal or one square gap)
+  if (type === CONSTANTS.UNIT_CODES.KNIGHT) {
+    return {
+      description: 'Long Bow (ranged)',
+      minDistance: 2,
+      maxDistance: 2,
+    };
+  }
+
+  // Bishops are only close-combat (1 straight)
+  if (type === CONSTANTS.UNIT_CODES.BISHOP) {
+    return {
+      description: 'Wand (close-combat)',
+      minDistance: 1,
+      maxDistance: 1,
+    };
+  }
+
+  return {
+    minDistance: 1,
+    maxDistance: 1,
+  };
+}
+
 function createUnit(playerId, type) {
   return {
     playerId,
@@ -16,6 +51,7 @@ function createUnit(playerId, type) {
       movement: true,
       action: true,
     },
+    weapon: makeWeapon(type),
   };
 }
 

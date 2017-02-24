@@ -8,12 +8,12 @@
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           <input class="mdl-textfield__input" type="text" id="player-one" v-model="playerNames[0]">
           <label class="mdl-textfield__label" for="player-one">Player 1</label>
-          <span class="player-avatar-icon player-color--one material-icons">person</span>
+          <span class="player-avatar-icon player-text-color--one material-icons">person</span>
         </div>
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           <input class="mdl-textfield__input" type="text" id="player-two" v-model="playerNames[1]">
           <label class="mdl-textfield__label" for="player-two">Player 2</label>
-          <span class="player-avatar-icon player-color--two material-icons">person</span>
+          <span class="player-avatar-icon player-text-color--two material-icons">person</span>
         </div>
         <br />
       </p>

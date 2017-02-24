@@ -31,8 +31,8 @@ export default {
     ]),
     playerColorClass() {
       return {
-        'player-color--one': this.currentPlayer.localId === 1,
-        'player-color--two': this.currentPlayer.localId === 2,
+        'player-text-color--one': this.currentPlayer.localId === 1,
+        'player-text-color--two': this.currentPlayer.localId === 2,
       };
     },
   },

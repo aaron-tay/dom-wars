@@ -1,8 +1,16 @@
+import lodash from 'lodash';
 import core from './core';
 import layer from './layer';
 
 function pathKey(x, y) {
   return core.coordinate(x, y);
+}
+
+// Check if the number if between the [min, max] inclusively at both bounds
+function inRange(number, min, max, isMaxInclusive = true) {
+  const adjustment = (isMaxInclusive ? 1 : 0);
+  const result = lodash.inRange(number, min, max + adjustment);
+  return result;
 }
 
 function hasEnergyForMovement(unit) {
@@ -23,6 +31,8 @@ function hasOpponentUnitInTile(tile, currentUnit) {
   return true;
 }
 
+// NOTE(ajt): Same penalty is currently applied to both movement and attack
+// Attacking might benefit from using a different penalty in the future
 function tileMovementPenalty(tile, currentUnit) {
   // Cannot pass through opposing units
   if (hasOpponentUnitInTile(tile, currentUnit)) { return 999; }
@@ -31,7 +41,7 @@ function tileMovementPenalty(tile, currentUnit) {
   return 1;
 }
 
-function canMoveIntoTile(tile, currentUnit, movementParams, distance) {
+function canMoveIntoTile(tile, currentUnit, movementParams, distanceTravelled) {
   const hasMovementObstacle = !!tile.unit;
   const hasMovementEnergy = hasEnergyForMovement(currentUnit);
   if (hasMovementObstacle || !hasMovementEnergy) {
@@ -39,17 +49,16 @@ function canMoveIntoTile(tile, currentUnit, movementParams, distance) {
   }
 
   if (movementParams) {
-    const distanceTravelled = distance; // (currentUnit.speed - distance);
-    // TODO(ajt): bug here with negative distanceTravelled
-    // console.log(distanceTravelled, currentUnit.speed, distance);
-    const isWithinMaximumDistance = (distanceTravelled <= movementParams.maxDistance);
-    return isWithinMaximumDistance;
+    const min = 0;
+    const max = movementParams.maxDistance;
+    const isWithinRange = inRange(distanceTravelled, min, max);
+    return isWithinRange;
   }
 
   return true;
 }
 
-function canEngageCombatInTile(tile, currentUnit, combatParams, distance) {
+function canEngageCombatInTile(tile, currentUnit, combatParams, distanceTravelled) {
   const hasOpponent = hasOpponentUnitInTile(tile, currentUnit);
   const hasCombatEnergy = hasEnergyForCombat(currentUnit);
   if (!hasOpponent || !hasCombatEnergy) {
@@ -57,24 +66,27 @@ function canEngageCombatInTile(tile, currentUnit, combatParams, distance) {
   }
 
   if (combatParams) {
-    // NOTE(ajt): this is hacky but tests a proof-of-concept
-    const distanceTravelled = distance; // (currentUnit.speed - distance);
-    const isWithinMinimumDistance = (combatParams.minDistance <= distanceTravelled);
-    const isWithinMaximumDistance = (distanceTravelled <= combatParams.maxDistance);
-    return (isWithinMinimumDistance && isWithinMaximumDistance);
+    const min = combatParams.minDistance;
+    const max = combatParams.maxDistance;
+    const isWithinRange = inRange(distanceTravelled, min, max);
+    return isWithinRange;
   }
 
   return true;
 }
 
+// TODO(ajt): Make this generic so we can apply different subtle logic to it
+// Having movement and combat combined is nice but there's definitely short-comings
+// due to the coupled nature
 function generatePathingArea(
-  x, y, world, distance,
-  movementParams, combatParams = {},
+  x, y, world,
+  movementParams = {}, combatParams = {},
+  distance = 0,
   iVisitedPaths = {}, parentCoordinate = null
 ) {
   const visitedPaths = iVisitedPaths;
   const maxDistance = Math.max(movementParams.maxDistance, combatParams.maxDistance);
-  if (distance > maxDistance) { return visitedPaths; }
+  if (!inRange(distance, 0, maxDistance)) { return visitedPaths; }
 
   const destinationTile = world.getTile(x, y);
   if (!destinationTile) { return visitedPaths; }
@@ -104,11 +116,12 @@ function generatePathingArea(
   const newDistance = (distance + penalty);
 
   // NOTE(ajt): linter disable cos its easier to follow
+  // NOTE(ajt): This movement logic means diagonals cost '2' (i.e. manhatten distance)
   /* eslint-disable max-len */
-  generatePathingArea(x + 1, y, world, newDistance, movementParams, combatParams, visitedPaths, coordinate);
-  generatePathingArea(x, y + 1, world, newDistance, movementParams, combatParams, visitedPaths, coordinate);
-  generatePathingArea(x - 1, y, world, newDistance, movementParams, combatParams, visitedPaths, coordinate);
-  generatePathingArea(x, y - 1, world, newDistance, movementParams, combatParams, visitedPaths, coordinate);
+  generatePathingArea(x + 1, y, world, movementParams, combatParams, newDistance, visitedPaths, coordinate);
+  generatePathingArea(x, y + 1, world, movementParams, combatParams, newDistance, visitedPaths, coordinate);
+  generatePathingArea(x - 1, y, world, movementParams, combatParams, newDistance, visitedPaths, coordinate);
+  generatePathingArea(x, y - 1, world, movementParams, combatParams, newDistance, visitedPaths, coordinate);
   /* eslint-enable */
   return visitedPaths;
 }
@@ -130,7 +143,7 @@ function generatePathingLayerForUnit({ world }) {
   // const distance = Math.max(movementParams.maxDistance, combatParams.maxDistance);
 
   /* eslint-disable max-len */
-  const pathingArea = generatePathingArea(startX, startY, world, 0, movementParams, combatParams);
+  const pathingArea = generatePathingArea(startX, startY, world, movementParams, combatParams);
   /* eslint-enable */
 
   const pathingLayer = layer.createLayer(dimensions, (x, y) => {

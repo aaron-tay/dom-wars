@@ -1,18 +1,16 @@
 import Vue from 'vue';
 import lodash from 'lodash';
-// import * as types from './../mutation-types';
+import * as MUTATIONS from './../mutation-types';
 
 const localState = {
-  /*
-  <playerId>: {
-    playerId: <playerId>
-    name: '',
-  }
-  */
+  // <playerId>: {}
   players: {},
+  originalPlayerTurnOrder: [],  // [<playerId>, ...]
+  playerTurnOrder: [],          // [<playerId>, ...]
 };
 
 const getters = {
+  currentPlayerId: (state => lodash.head(state.playerTurnOrder)),
   getPlayerById: (state, allGetters) => (playerId =>
     allGetters.getPlayersById([playerId])[0]
   ),
@@ -27,15 +25,24 @@ const getters = {
     return result;
   },
   remainingOpponents: (state, allGetters) => {
-    const opponentPlayerIds = allGetters.remainingOpponentPlayerIds;
+    // order returned is based on player turn order
+    const currentPlayer = allGetters.currentPlayer;
+    const opponentPlayerIds = lodash.reject(state.playerTurnOrder, (player =>
+      player.id === currentPlayer.id
+    ));
     const result = allGetters.getPlayersById(opponentPlayerIds);
     return result;
+  },
+  hasWinner: (state) => {
+    const remainingPlayerIds = state.playerTurnOrder;
+    return remainingPlayerIds.length <= 1;
   },
 };
 
 const PLAYER_ADD = 'PLAYER:ADD';
 const PLAYER_REMOVE = 'PLAYER:REMOVE';
 const PLAYER_CLEAR_ALL = 'PLAYER:CLEAR_ALL';
+const PLAYER_TURN_SET_ORDER = 'PLAYER_TURN:SET_ORDER';
 
 const actions = {
   addPlayer({ commit }, { playerId, name, localId }) {
@@ -53,6 +60,9 @@ const actions = {
   clearAllPlayers({ commit }) {
     commit(PLAYER_CLEAR_ALL);
   },
+  setPlayerTurnOrder({ commit }, playerTurnOrder) {
+    commit(PLAYER_TURN_SET_ORDER, playerTurnOrder);
+  },
 };
 
 /* eslint-disable no-param-reassign */
@@ -69,6 +79,20 @@ const mutations = {
   },
   [PLAYER_CLEAR_ALL](state) {
     state.players = {};
+  },
+  [PLAYER_TURN_SET_ORDER](state, playerTurnOrder) {
+    state.originalPlayerTurnOrder = playerTurnOrder;
+    state.playerTurnOrder = lodash.clone(playerTurnOrder);
+  },
+  [MUTATIONS.CURRENT_PLAYER_TURN_END](state) {
+    const currentPlayerId = state.playerTurnOrder.shift();
+    state.playerTurnOrder.push(currentPlayerId);
+  },
+  [MUTATIONS.PLAYER_GAME_END](state, { playerId }) {
+    const updatedTurnOrder = lodash.reject(state.playerTurnOrder, item => (
+      item === playerId
+    ));
+    state.playerTurnOrder = updatedTurnOrder;
   },
 };
 /* eslint-disable no-param-reassign */

@@ -3,7 +3,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import pathing from './../engine/pathing';
+import engine from './../engine';
 
 export default {
   data() {
@@ -41,7 +41,7 @@ export default {
         dimensions: this.getWorldDefinition,
       };
 
-      const pathingLayer = pathing.generatePathingLayerForUnit({
+      const pathingLayer = engine.pathing.generatePathingLayerForUnit({
         world,
       });
 

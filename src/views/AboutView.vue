@@ -58,6 +58,11 @@ export default {
       changelog: `
 # Changelog
 
+### v0.06
+Units have different attack behaviours (prototyping)
+- Pawns can attack up to 2 squares in straight lines or 1 square diagonally
+- Knights can attack 1 square diagonally or with at least 1 space between it and opponent in straight lines
+- Bishops can attack only 1 square in straight lines
 ### v0.05
 Units have slightly more visual difference when they've moved/attacked.
 Added end-game condition where players are eliminated if they've lost all their units

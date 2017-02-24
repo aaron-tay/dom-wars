@@ -1,7 +1,7 @@
 <template>
   <!-- NOTE(ajt): layers within tiles means we're restricted to tile dimensions -->
   <div class="tile" :class="tileCssClass">
-    <terrain-layer :legacyTerrain="tile.terrain"></terrain-layer>
+    <terrain-layer :terrain="terrain"></terrain-layer>
 
     <span class="debug">
       {{tile.x}},{{tile.y}}
@@ -45,6 +45,12 @@ export default {
     },
   },
   computed: {
+    // TODO(ajt): Adapter over legacy terrain implementation
+    terrain() {
+      return {
+        code: this.tile.terrain,
+      };
+    },
     tileCssClass() {
       return {
         'tile--selected': this.tile.isSelected,

@@ -6,21 +6,17 @@
 <script>
 export default {
   props: {
-    // Legacy input
-    legacyTerrain: {
-      type: Number,
+    terrain: {
+      type: Object,
       default() {
-        return 0;
+        return {
+          code: 0,
+        };
       },
     },
   },
   computed: {
     // Internally we use this representation until we've migrated
-    terrain() {
-      return {
-        code: this.legacyTerrain,
-      };
-    },
     terrainCssClass() {
       return {
         'terrain--ground': this.terrain.code === 1,

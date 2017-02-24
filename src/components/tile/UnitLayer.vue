@@ -48,7 +48,7 @@ export default {
 <style lang="scss">
 @import './../../assets/globals.scss';
 
-$fade-duration-ms: 0.75s;
+$fade-duration-ms: 0.35s;
 
 .unit__character {
   position: relative;
@@ -58,7 +58,7 @@ $fade-duration-ms: 0.75s;
   height: 50%;
   text-align: center;
 
-  @include transition(background-color, $fade-duration-ms/2.0, ease-in-out);
+  @include transition(background-color, $fade-duration-ms, ease-in-out);
 }
 .unit--pawn .unit__character {
   background-color: $pastel-orange;

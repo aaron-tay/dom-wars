@@ -1,0 +1,55 @@
+// NOTE(ajt): Here's some documentation for next time on sass mixins & functions
+// http://thesassway.com/advanced/pure-sass-functions
+
+$kenney-tile-size: 64px;
+$kenney-tile-padding: 32px;
+$kenney-transition-duration-sec: 0.3s;
+@function kenney-pos($input, $offset:0) {
+  @return -(($kenney-tile-size * $input) + ($kenney-tile-padding * ($input + 1)) + $offset);
+}
+@mixin kenney-tile($x, $y, $xOffset:0, $yOffset:0) {
+  background-image: url('~assets/tileset-kenney-medieval.svg');
+  background-repeat: no-repeat;
+  background-position: kenney-pos($x, $xOffset) kenney-pos($y, $yOffset);
+  opacity: 1;
+}
+
+.tile--set-kenney .tile-layer {
+  @include transition(background-position, $kenney-transition-duration-sec, ease-in-out);
+}
+
+.tile--set-kenney .terrain--grass {
+  @include kenney-tile(0, 0);
+}
+
+.tile--set-kenney .terrain--ground {
+  @include kenney-tile(1, 1);
+}
+
+.tile--set-kenney .terrain--water {
+  @include kenney-tile(1, 2);
+}
+
+.tile--set-kenney .terrain--sand {
+  @include kenney-tile(2, 0);
+}
+
+.tile--set-kenney .unit--pawn.unit-owner--player-one {
+  @include kenney-tile(12, 4, 16px, 16px);
+}
+.tile--set-kenney .unit--knight.unit-owner--player-one {
+  @include kenney-tile(14, 4, 16px, 16px);
+}
+.tile--set-kenney .unit--bishop.unit-owner--player-one {
+  @include kenney-tile(13, 4, 16px, 16px);
+}
+
+.tile--set-kenney .unit--pawn.unit-owner--player-two {
+  @include kenney-tile(12, 6, 16px, 16px);
+}
+.tile--set-kenney .unit--knight.unit-owner--player-two {
+  @include kenney-tile(14, 6, 16px, 16px);
+}
+.tile--set-kenney .unit--bishop.unit-owner--player-two {
+  @include kenney-tile(13, 6, 16px, 16px);
+}

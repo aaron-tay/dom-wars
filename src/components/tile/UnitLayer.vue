@@ -1,6 +1,6 @@
 <template>
-  <div class="tile-layer layer--unit">
-    <div class="unit" :class="unitCssClass">
+  <div class="tile-layer layer--unit" :class="unitCssClass">
+    <div class="unit__character">
       <span class="unit__hp">
         {{ unit.hp }}
       </span>
@@ -50,7 +50,7 @@ export default {
 
 $fade-duration-ms: 0.75s;
 
-.unit {
+.unit__character {
   position: relative;
   margin: auto;
   top: 22.5%;
@@ -60,15 +60,16 @@ $fade-duration-ms: 0.75s;
 
   @include transition(background-color, $fade-duration-ms/2.0, ease-in-out);
 }
-.unit--pawn {
+.unit--pawn .unit__character {
   background-color: $pastel-orange;
 }
-.unit--knight {
+.unit--knight .unit__character {
   background-color: $pastel-purple-lighter;
 }
-.unit--bishop {
+.unit--bishop .unit__character {
   background-color: $pastel-magenta;
 }
+
 .unit__hp {
   border-radius: 999px;
   width: 20px;
@@ -85,11 +86,11 @@ $fade-duration-ms: 0.75s;
   background-color: $player-two-color;
 }
 
-.unit-owner--player-one {
+.unit-owner--player-one .unit__character {
   border: 2px solid $player-one-color;
   border-radius: 4px;
 }
-.unit-owner--player-two {
+.unit-owner--player-two .unit__character {
   border: 2px solid $player-two-color;
   border-radius: 4px;
 }

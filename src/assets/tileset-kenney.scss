@@ -34,22 +34,22 @@ $kenney-transition-duration-sec: 0.3s;
   @include kenney-tile(2, 0);
 }
 
-.tile--set-kenney .unit--pawn.unit-owner--player-one {
+.tile--set-kenney .unit--pawn.unit-owner--player-one .unit__character {
   @include kenney-tile(12, 4, 16px, 16px);
 }
-.tile--set-kenney .unit--knight.unit-owner--player-one {
+.tile--set-kenney .unit--knight.unit-owner--player-one .unit__character {
   @include kenney-tile(14, 4, 16px, 16px);
 }
-.tile--set-kenney .unit--bishop.unit-owner--player-one {
+.tile--set-kenney .unit--bishop.unit-owner--player-one .unit__character {
   @include kenney-tile(13, 4, 16px, 16px);
 }
 
-.tile--set-kenney .unit--pawn.unit-owner--player-two {
+.tile--set-kenney .unit--pawn.unit-owner--player-two .unit__character {
   @include kenney-tile(12, 6, 16px, 16px);
 }
-.tile--set-kenney .unit--knight.unit-owner--player-two {
+.tile--set-kenney .unit--knight.unit-owner--player-two .unit__character {
   @include kenney-tile(14, 6, 16px, 16px);
 }
-.tile--set-kenney .unit--bishop.unit-owner--player-two {
+.tile--set-kenney .unit--bishop.unit-owner--player-two .unit__character {
   @include kenney-tile(13, 6, 16px, 16px);
 }

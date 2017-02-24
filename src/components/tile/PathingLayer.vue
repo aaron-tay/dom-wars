@@ -1,6 +1,6 @@
 <template>
-  <div class="tile-layer layer--pathing">
-    <div class="pathing" :class="pathingCssClass"></div>
+  <div class="tile-layer layer--pathing" :class="pathingCssClass">
+    <div class="pathing__square"></div>
   </div>
 </template>
 
@@ -32,8 +32,7 @@ export default {
 $color-pathing-movement: $color-info;
 $color-pathing-combat: $color-danger;
 
-// Pathing layer
-.pathing {
+.pathing__square {
   position: relative;
   margin: auto;
   top: 10%;
@@ -42,13 +41,14 @@ $color-pathing-combat: $color-danger;
   text-align: center;
   border-radius: 4px;
 }
-.pathing--movement {
+
+.pathing--movement .pathing__square {
   background-color: transparentize($color-pathing-movement, 0.5);
 }
-.pathing--combat {
+.pathing--combat .pathing__square {
   background-color: transparentize($color-pathing-combat, 0.5);
 }
-.pathing--blocked {
+.pathing--blocked .pathing__square {
   background-color: transparentize($pastel-gray, 0.5);
 }
 

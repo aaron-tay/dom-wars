@@ -79,7 +79,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import lodash from 'lodash';
-import CONSTANTS from './../constants';
+import CONSTANTS from './../../engine/constants';
 import * as GameEngine from './../GameEngine';
 import engine from './../../engine';
 

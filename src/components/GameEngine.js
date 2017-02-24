@@ -1,4 +1,3 @@
-// import CONSTANTS from './constants';
 import engine from './../engine';
 
 // dimensions: { width, height }

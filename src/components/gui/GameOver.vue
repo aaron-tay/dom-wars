@@ -19,7 +19,7 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import CONSTANTS from './../constants';
+import CONSTANTS from './../../engine/constants';
 
 export default {
   data() {

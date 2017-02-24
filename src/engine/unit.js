@@ -1,6 +1,6 @@
 import lodash from 'lodash';
 import layer from './layer';
-import CONSTANTS from './../components/constants';
+import CONSTANTS from './../engine/constants';
 
 // NOTE(ajt): hand-coded weapons for now
 function makeWeapon(type) {

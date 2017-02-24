@@ -1,7 +1,7 @@
 // import Vue from 'vue';
 import lodash from 'lodash';
 import * as MUTATIONS from './../mutation-types';
-import CONSTANTS from './../../components/constants';
+import CONSTANTS from './../../engine/constants';
 
 const localState = {
   phase: null,                  // CONSTANTS.GAME_PHASE

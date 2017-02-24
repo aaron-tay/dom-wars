@@ -25,7 +25,7 @@ import { mapActions, mapGetters } from 'vuex';
 import DomGameTile from './DomGameTile';
 import GameInterface from './GameInterface';
 import UnitTrigger from './UnitTrigger';
-import CONSTANTS from './constants';
+import CONSTANTS from './../engine/constants';
 
 export default {
   components: {

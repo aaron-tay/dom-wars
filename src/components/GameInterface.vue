@@ -20,7 +20,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import lodash from 'lodash';
-import CONSTANTS from './constants';
+import CONSTANTS from './../engine/constants';
 import GuiTitle from './gui/Title';
 import GuiSetup from './gui/Setup';
 import GuiPlaying from './gui/Playing';

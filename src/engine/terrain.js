@@ -1,7 +1,7 @@
 import lodash from 'lodash';
 import core from './core';
 import layer from './layer';
-import CONSTANTS from './../components/constants';
+import CONSTANTS from './../engine/constants';
 
 const TERRAIN = [
   { name: 'unknown', code: CONSTANTS.TILE_CODES.EMPTY },

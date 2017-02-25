@@ -55,7 +55,17 @@ export default {
       return result;
     },
     isPlayingPhase() {
-      return this.currentGamePhase === CONSTANTS.GAME_PHASE.PLAYER_TURN;
+      const playingPhases = [
+        CONSTANTS.GAME_PHASE.PLAYER_TURN_BEFORE,
+        CONSTANTS.GAME_PHASE.PLAYER_TURN,
+        CONSTANTS.GAME_PHASE.PLAYER_TURN_AFTER,
+        CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT_BEFORE,
+        CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT,
+        CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT_AFTER,
+      ];
+      const self = this;
+      const result = lodash.find(playingPhases, (phase => phase === self.currentGamePhase));
+      return result;
     },
     isGameOverPhase() {
       return this.currentGamePhase === CONSTANTS.GAME_PHASE.GAME_OVER;

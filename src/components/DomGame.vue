@@ -1,8 +1,8 @@
 <template>
   <!-- MDL isn't really required but let's enable it anyway -->
   <div v-mdl>
-    <div class="page-content mdl-grid" :class="{ 'enabled': isGameReady }">
-      <div class="mdl-cell mdl-cell--8-col">
+    <div class="page-content mdl-grid" :class="{ 'disabled': !isGameReady }">
+      <div class="mdl-cell mdl-cell--8-col game-tiles">
         <template v-for="(_, yKey) in getWorldDefinition.height">
           <div class="horizontal">
             <template v-for="(_, xKey) in getWorldDefinition.width">
@@ -123,4 +123,8 @@ export default {
 </script>
 
 <style lang="scss">
+
+.disabled .game-tiles {
+  pointer-events: none;
+}
 </style>

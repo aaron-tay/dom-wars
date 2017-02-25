@@ -88,15 +88,10 @@ $tile-size-px: 64px;
   // NOTE(ajt): not sure why I need 'table-cell'... inline-block should work...
   z-index: $resting-z-index;
 
-  //http://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting-using-css
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  @include user-select(none);
 }
 
-.enabled .tile:hover {
+.tile:hover {
   border: 1px solid $color-selected;
   z-index: $selected-z-index;
 }

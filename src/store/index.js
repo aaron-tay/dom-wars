@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import players from './modules/players';
 import game from './modules/game';
 import world from './modules/world';
+import combat from './modules/combat';
 import * as actions from './actions';
 // import * as getters from './getters';
 
@@ -17,6 +18,7 @@ export default new Vuex.Store({
     players,
     game,
     world,
+    combat,
   },
   strict: debug,
 });

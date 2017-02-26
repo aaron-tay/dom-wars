@@ -1,4 +1,3 @@
-// import Vue from 'vue';
 import lodash from 'lodash';
 import * as MUTATIONS from './../mutation-types';
 import CONSTANTS from './../../engine/constants';

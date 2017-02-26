@@ -45,59 +45,23 @@ export const playerOrderUnitMove = ({ commit, getters }, { source, destination }
   // TODO(ajt): post-movement actions
 };
 
-function remainingUnits(units) {
-  const result = lodash.filter(units, (unit => (unit.hp > 0)));
-  return result;
-}
-
 // When the player orders a unit to attack a location
-export const playerOrderUnitAttack = ({ commit, dispatch, getters }, { source, destination }) => {
+export const playerOrderUnitAttack = ({ dispatch }, { source, destination }) => {
   const attacker = source.unit;
   const defender = destination.unit;
   if (!attacker) { throw new Error(`Expected unit in source: ${source}`); }
   if (!defender) { throw new Error(`Expected unit in destination: ${destination}`); }
-  const attackingPlayerId = attacker.playerId;
-  const defendingPlayerId = defender.playerId;
 
-  // TODO(ajt): pre-combat actions
-
-  const damage = Math.max(attacker.attack - defender.defense, 1);
-
-  // TODO(ajt): Since its a 'unit' operation, it'll be better if (x,y) info isn't required
-  commit(MUTATIONS.UNIT_REDUCE_HP, {
-    unit: defender,
-    amount: damage,
-  });
-
-  if (defender.hp <= 0) {
-    commit(MUTATIONS.TILE_REMOVE_UNIT, {
+  dispatch('initiateCombat', {
+    source: {
+      x: source.x,
+      y: source.y,
+    },
+    destination: {
       x: destination.x,
       y: destination.y,
-    });
-  }
-
-  // deplete the attacker of energy
-  commit(MUTATIONS.UNIT_SET_ENERGY, {
-    unit: attacker,
-    energy: {
-      movement: false,
-      action: false,
     },
   });
-
-  // TODO(ajt): post-combat actions
-  // Check if attacking player has won
-  // Check if defending player has won
-  const attackingPlayerUnits = remainingUnits(getters.getUnitsOwnedByPlayerId(attackingPlayerId));
-  const defendingPlayerUnits = remainingUnits(getters.getUnitsOwnedByPlayerId(defendingPlayerId));
-  if (defendingPlayerUnits.length === 0) {
-    // attacking might be winner
-    dispatch('playerRelinquishGame', { playerId: defendingPlayerId });
-  }
-  if (attackingPlayerUnits.length === 0) {
-    // defending might be winner
-    dispatch('playerRelinquishGame', { playerId: attackingPlayerId });
-  }
 };
 
 // When player wants to surrender

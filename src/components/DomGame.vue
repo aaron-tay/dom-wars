@@ -20,6 +20,7 @@
     </div>
     <unit-trigger></unit-trigger>
     <player-phase-trigger></player-phase-trigger>
+    <combat-trigger></combat-trigger>
   </div>
 </template>
 
@@ -30,6 +31,7 @@ import GameInterface from './GameInterface';
 import DomGameOverlay from './DomGameOverlay';
 import UnitTrigger from './UnitTrigger';
 import PlayerPhaseTrigger from './PlayerPhaseTrigger';
+import CombatTrigger from './CombatTrigger';
 
 export default {
   components: {
@@ -38,6 +40,7 @@ export default {
     GameInterface,
     UnitTrigger,
     PlayerPhaseTrigger,
+    CombatTrigger,
   },
   data() {
     return {

@@ -58,6 +58,9 @@ export default {
       changelog: `
 # Changelog
 
+### v0.07
+Minor refactoring of state management to enable animations
+Added UI to display the current player's turn when it becomes their turn
 ### v0.06
 Units have different attack behaviours (prototyping)
 - Pawns can attack up to 2 squares in straight lines or 1 square diagonally

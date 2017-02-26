@@ -1,5 +1,6 @@
 import lodash from 'lodash';
 import * as MUTATIONS from './mutation-types';
+import CONSTANTS from './../engine/constants';
 
 // Actions players can take. We have rough prefixing for now
 
@@ -125,12 +126,27 @@ export const playerRelinquishGame = ({ commit, getters }, { playerId }) => {
 };
 
 // When the current player wants to end their turn
-export const playerRelinquishTurn = ({ commit, getters }) => {
+export const playerRelinquishTurn = ({ commit, dispatch }) => {
+  commit(MUTATIONS.TILE_UNSELECT);
+  dispatch('setGamePhase', CONSTANTS.GAME_PHASE.PLAYER_TURN_AFTER);
+};
+
+// Signal when the specified player is ready to commence the game
+export const playerReadyToCommenceGame = ({ commit }, { playerId }) => {
+  console.log(commit, playerId);
+  // if all players are ready then transition to the 'playing-game' state
+};
+
+
+// Actions the game will automatically invoke
+
+export const gameRelinquishPlayerTurn = ({ commit, getters }) => {
   const currentPlayer = getters.currentPlayer;
   commit(MUTATIONS.CURRENT_PLAYER_TURN_END);
 
   // TODO(ajt): Maybe have a specialised mutation to achieve this 'atomically'
   // NOTE(ajt): slightly duplicated logic with playerRelinquishGame
+  // Restore all units energy owned by the now current player
   const units = getters.getUnitsOwnedByPlayerId(currentPlayer.playerId);
   lodash.forEach(units, (unit) => {
     commit(MUTATIONS.UNIT_SET_ENERGY, {
@@ -141,12 +157,4 @@ export const playerRelinquishTurn = ({ commit, getters }) => {
       },
     });
   });
-
-  commit(MUTATIONS.TILE_UNSELECT);
-};
-
-// Signal when the specified player is ready to commence the game
-export const playerReadyToCommenceGame = ({ commit }, { playerId }) => {
-  console.log(commit, playerId);
-  // if all players are ready then transition to the 'playing-game' state
 };

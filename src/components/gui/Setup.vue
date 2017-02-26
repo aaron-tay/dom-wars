@@ -80,7 +80,6 @@
 import { mapActions, mapGetters } from 'vuex';
 import lodash from 'lodash';
 import CONSTANTS from './../../engine/constants';
-import * as GameEngine from './../GameEngine';
 import engine from './../../engine';
 
 export default {
@@ -140,14 +139,22 @@ export default {
       this.setPlayerTurnOrder(playerTurnOrder);
       this.setGamePhase(CONSTANTS.GAME_PHASE.SETUP_WORLD);
     },
+    helperGenerateTerrain(dimensions, terrainRatios = {}) {
+      // TODO(ajt): Temporary until we have good maps
+      return engine.terrain.generateTerrainLayer({ dimensions, terrainRatios });
+    },
+    helperGenerateUnits(dimensions, allPlayers) {
+      // TODO(ajt): Temporary until we have unit placement
+      return engine.unit.generateUnitLayerForBootstrap({ dimensions, allPlayers });
+    },
     generateWorld() {
       const worldDef = this.getWorldDefinition;
       const allPlayers = this.allPlayers;
       const terrainRatios = lodash.mapValues(this.terrainRatios, (item => (
         lodash.toNumber(item)
       )));
-      const terrain = GameEngine.helperGenerateTerrain(worldDef, terrainRatios);
-      const units = GameEngine.helperGenerateUnits(worldDef, allPlayers);
+      const terrain = this.helperGenerateTerrain(worldDef, terrainRatios);
+      const units = this.helperGenerateUnits(worldDef, allPlayers);
       this.setWorld({
         terrain,
         units,

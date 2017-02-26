@@ -167,7 +167,7 @@ export default {
       });
     },
     confirmWorld() {
-      this.setGamePhase(CONSTANTS.GAME_PHASE.PLAYER_TURN);
+      this.setGamePhase(CONSTANTS.GAME_PHASE.PLAYER_TURN_BEFORE);
     },
   },
   watch: {

@@ -19,7 +19,6 @@
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import lodash from 'lodash';
 import CONSTANTS from './../engine/constants';
 import GuiTitle from './gui/Title';
 import GuiSetup from './gui/Setup';
@@ -39,33 +38,11 @@ export default {
   computed: {
     ...mapGetters([
       'currentGamePhase',
+      'isPlayingPhase',
+      'isSetupPhase',
     ]),
     isTitlePhase() {
       return this.currentGamePhase === CONSTANTS.GAME_PHASE.TITLE;
-    },
-    isSetupPhase() {
-      const setupPhases = [
-        CONSTANTS.GAME_PHASE.SETUP_PLAYERS,
-        CONSTANTS.GAME_PHASE.SETUP_WORLD,
-        CONSTANTS.GAME_PHASE.SETUP_UNITS,
-        CONSTANTS.GAME_PHASE.SETUP_UNIT_PLACEMENT,
-      ];
-      const self = this;
-      const result = lodash.find(setupPhases, (phase => phase === self.currentGamePhase));
-      return result;
-    },
-    isPlayingPhase() {
-      const playingPhases = [
-        CONSTANTS.GAME_PHASE.PLAYER_TURN_BEFORE,
-        CONSTANTS.GAME_PHASE.PLAYER_TURN,
-        CONSTANTS.GAME_PHASE.PLAYER_TURN_AFTER,
-        CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT_BEFORE,
-        CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT,
-        CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT_AFTER,
-      ];
-      const self = this;
-      const result = lodash.find(playingPhases, (phase => phase === self.currentGamePhase));
-      return result;
     },
     isGameOverPhase() {
       return this.currentGamePhase === CONSTANTS.GAME_PHASE.GAME_OVER;

@@ -1,4 +1,5 @@
 // import Vue from 'vue';
+import lodash from 'lodash';
 import * as MUTATIONS from './../mutation-types';
 import CONSTANTS from './../../engine/constants';
 
@@ -12,6 +13,28 @@ const localState = {
 
 const getters = {
   currentGamePhase: (state => state.phase),
+  isSetupPhase: (state, allGetters) => {
+    const setupPhases = [
+      CONSTANTS.GAME_PHASE.SETUP_PLAYERS,
+      CONSTANTS.GAME_PHASE.SETUP_WORLD,
+      CONSTANTS.GAME_PHASE.SETUP_UNITS,
+      CONSTANTS.GAME_PHASE.SETUP_UNIT_PLACEMENT,
+    ];
+    const result = lodash.find(setupPhases, (phase => phase === allGetters.currentGamePhase));
+    return result;
+  },
+  isPlayingPhase: (state, allGetters) => {
+    const playingPhases = [
+      CONSTANTS.GAME_PHASE.PLAYER_TURN_BEFORE,
+      CONSTANTS.GAME_PHASE.PLAYER_TURN,
+      CONSTANTS.GAME_PHASE.PLAYER_TURN_AFTER,
+      CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT_BEFORE,
+      CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT,
+      CONSTANTS.GAME_PHASE.PLAYER_TURN_COMBAT_AFTER,
+    ];
+    const result = lodash.find(playingPhases, (phase => phase === allGetters.currentGamePhase));
+    return result;
+  },
   hasSelection: (state) => {
     if (state.selection.x === null || state.selection.y === null) {
       return false;

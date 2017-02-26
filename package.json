@@ -16,6 +16,7 @@
     "vue": "^2.1.10"
   },
   "devDependencies": {
+    "animate.css": "^3.5.2",
     "autoprefixer": "^6.7.2",
     "babel-core": "^6.23.1",
     "babel-eslint": "^7.0.0",

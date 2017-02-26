@@ -27,7 +27,7 @@
       </h5>
       <!-- TODO(ajt): Make this UI look nicer cos there's huge potential :) -->
       <h6>Tileset</h6>
-      <div v-for="tilesetName in ['standard', 'kenney']" v-mdl>
+      <div v-for="tilesetName in availableTilesets" v-mdl>
         <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" :for="'tileset-'+tilesetName">
           <input type="radio" :id="'tileset-'+tilesetName" class="mdl-radio__button" name="tileset" :value="tilesetName" v-model="tileset">
           <span class="mdl-radio__label">{{tilesetName}}</span>
@@ -96,6 +96,9 @@ export default {
         4: 50,
       },
       tileset: 'standard',
+      availableTilesets: [
+        'standard', 'kenney',
+      ],
     };
   },
   computed: {

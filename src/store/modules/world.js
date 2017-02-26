@@ -72,6 +72,7 @@ const getters = {
     ));
     return result;
   },
+  getUnitById: state => (unitId => state.indexed.units[unitId]),
 };
 
 const WORLD_TILESET_SET = 'WORLD:TILESET:SET';

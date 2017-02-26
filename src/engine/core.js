@@ -22,7 +22,7 @@ function pickFromBagFunction(ratio) {
   // Normalise the numbers, so we'll always work within [0.0, 1.0]
   // NOTE(ajt): JS has issues with floats but for our purposes its negligible
   const normalised = lodash.map(ratio, (item, key) => ({
-    terrainCode: key,
+    value: key,
     chance: (item / total),
   }));
 
@@ -31,12 +31,12 @@ function pickFromBagFunction(ratio) {
     let cumulativeProbability = 0;
 
     // http://stackoverflow.com/questions/9330394/how-to-pick-an-item-by-its-probability
-    const terrain = lodash.find(normalised, (item) => {
+    const randomItem = lodash.find(normalised, (item) => {
       cumulativeProbability += item.chance;
       return (input <= cumulativeProbability);
     });
 
-    return terrain;
+    return randomItem;
   };
 }
 

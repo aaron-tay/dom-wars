@@ -20,7 +20,8 @@ function generateTerrainLayer({ dimensions, terrainRatios }) {
   const terrainLayer = layer.createLayer(dimensions, () => {
     const number = lodash.random(0, 1, true);
     const terrain = terrainGenerator(number);
-    return lodash.toNumber(terrain.terrainCode);
+    const terrainCode = terrain.value;
+    return lodash.toNumber(terrainCode);
   });
 
   return terrainLayer;
